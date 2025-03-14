@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Ordering System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 0; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { text-align: center; }
+        .menu-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; }
+        button { padding: 5px 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Restaurant Ordering System</h1>
+        <h2>Menu</h2>
+        <div id="menu"></div>
+        <h2>Orders</h2>
+        <div id="orders"></div>
+    </div>
+    
+    <script>
+        let menu = [
+            { id: 1, name: "Burger", price: 5 },
+            { id: 2, name: "Pizza", price: 8 },
+            { id: 3, name: "Pasta", price: 7 }
+        ];
+        let orders = [];
+
+        function displayMenu() {
+            let menuDiv = document.getElementById("menu");
+            menuDiv.innerHTML = "";
+            menu.forEach(item => {
+                let div = document.createElement("div");
+                div.className = "menu-item";
+                div.innerHTML = `${item.name} - $${item.price} <button onclick="addToOrder(${item.id})">Order</button>`;
+                menuDiv.appendChild(div);
+            });
+        }
+
+        function displayOrders() {
+            let ordersDiv = document.getElementById("orders");
+            ordersDiv.innerHTML = "";
+            orders.forEach((item, index) => {
+                let div = document.createElement("div");
+                div.className = "menu-item";
+                div.innerHTML = `${item.name} - $${item.price} <button onclick="removeOrder(${index})">Cancel</button>`;
+                ordersDiv.appendChild(div);
+            });
+        }
+
+        function addToOrder(id) {
+            let item = menu.find(m => m.id === id);
+            if (item) {
+                orders.push(item);
+                displayOrders();
+            }
+        }
+
+        function removeOrder(index) {
+            orders.splice(index, 1);
+            displayOrders();
+        }
+
+        displayMenu();
+    </script>
+</body>
+</html>
