@@ -1,3 +1,5 @@
+const prompt = require('prompt-sync')();
+
 // Function to print the list (DRY Principle)
 function printList(list) {
     for (let i = 0; i < list.length; i++) {
@@ -5,15 +7,10 @@ function printList(list) {
     }
 }
 
-
-
 // Function to find the position of a username in the list
 function findIndex(list, username) {
     return list.indexOf(username);
 }
-
-
-
 
 // Define a list of usernames
 var usernames = [
@@ -43,171 +40,138 @@ var usernames = [
     "arctic_comet",
     "shadow_circuit"
 ];
-function sort_list(list, order) {
-    if (order == 'ascending') {
-        list.sort();
-    } else if (order == 'descending') {
+
+function search(key_user) {
+    var found = false;
+    var index = -1;
+    // Loop until the username is found
+    do {
+        if (usernames.includes(key_user)) {
+            index = findIndex(usernames, key_user);
+            found = true;
+        } else {
+            console.log('Username not found. Try again.');
+            key_user = prompt('USERNAME? ');
+        }
+    } while (!found);
+    return index;
+}
+
+// Function to add a username at a specific position
+function addPosition(list, username, position) {
+    list.splice(position, 0, username);
+    return list;
+}
+
+// Function to remove the first element from the list
+function removeFirst(list) {
+    list.shift();
+    return list;
+}
+
+// Function to remove the last element from the list
+function removeLast(list) {
+    list.pop();
+    return list;
+}
+
+// Function to add a username to the end of the list
+function addEnd(list, username) {
+    list.push(username);
+    return list;
+}
+
+// Function to sort the list in ascending or descending order
+function sortList(list, order) {
+    if (order == 'descending') {
         list.sort().reverse();
     } else {
-        console.log('Invalid order');
+        list.sort();
     }
+    return list;
+}
+
+// Function to create a copy of the list
+function copyList(list) {
+    let copy = list.slice();
+    return copy;
+}
+
+// Function to exit the program
+function exitProgram(temp) {
+    temp = true;
+    console.log('Goodbye!');
+    return temp;
 }
 
 // Main Program
 function main() {
-    console.log('A - Sort')
-    console.log('B - Search')
-    console.log('C - Add')
-    console.log('D - Remove')
-    console.log('E - Copy')
-    console.log('F - Exit')
-    var choice = prompt('Enter choice: ');
-    if (choice.toLowerCase() == 'a') {
-        do {
-            var order = prompt('Enter order: [Ascending/Descending] ');
-            if (order.toLowerCase() != 'ascending' || order.toLowerCase() != 'descending') {
-                console.log('Invalid order');
+    usernames.sort();
+    let done = false;
+    printList(usernames);
+    while (!done) {
+        // Display menu options
+        console.log('A - Search');
+        console.log('B - Add to specific position');
+        console.log('C - Remove first element');
+        console.log('D - Remove last element');
+        console.log('E - Add to end of list');
+        console.log('F - Sort');
+        console.log('G - Copy');
+        console.log('H - Exit');
+        var choice = prompt('Enter choice: ');
+        if (choice.toLowerCase() == 'a') {
+            let key_user = prompt('USERNAME? ');
+            let index = search(key_user);
+            console.log(`${key_user} is at position ${index}`);
+        } else if (choice.toLowerCase() == 'b') {
+            let new_user1 = prompt('NEW USERNAME? ');
+            let position = prompt('POSITION? ');
+            addPosition(usernames, new_user1, position);
+            printList(usernames);
+        } else if (choice.toLowerCase() == 'c') {
+            removeFirst(usernames);
+            printList(usernames);
+        } else if (choice.toLowerCase() == 'd') {
+            removeLast(usernames);
+            printList(usernames);
+        } else if (choice.toLowerCase() == 'e') {
+            let new_user3 = prompt('NEW USERNAME? ');
+            addEnd(usernames, new_user3);
+            printList(usernames);
+        } else if (choice.toLowerCase() == 'f') {
+            let order;
+            do {
+                order = prompt('Sort order (ascending/descending)? ').toLowerCase();
+                if (order != 'ascending' && order != 'descending') {
+                    console.log('Invalid input. Please enter "ascending" or "descending".');
+                }
+            } while (order != 'ascending' && order != 'descending');
+            sortList(usernames, order);
+            printList(usernames);
+        } else if (choice.toLowerCase() == 'g') {
+            let copyChoice = prompt('Copy full list or part of the list (full/part)? ').toLowerCase();
+            if (copyChoice == 'full') {
+                let copiedList = copyList(usernames);
+                console.log('Copied List:');
+                printList(copiedList);
+            } else if (copyChoice == 'part') {
+                let start = parseInt(prompt('Start index? '));
+                let end = parseInt(prompt('End index? '));
+                if (start >= 0 && end < usernames.length && start <= end) {
+                    let copiedList = usernames.slice(start, end + 1);
+                    console.log('Copied List:');
+                    printList(copiedList);
+                } else {
+                    console.log('Invalid indexes. Try again.');
+                }
             } else {
-                
+                console.log('Invalid choice. Please enter "full" or "part".');
+            }
+        } else if (choice.toLowerCase() == 'h') {
+            done = exitProgram();
         }
-        var order.toLowerCase() = prompt('Enter order: [Ascending/Descending] ');
-
-        sort_list(usernames, order);
-        printList(usernames);
     }
 }
+main();
 
-// Sort the usernames list in ascending order
-usernames.sort();
-
-// Print the sorted list
-console.log('Sorted list');
-printList(usernames);
-console.log('\n');
-
-const prompt = require('prompt-sync')();
-var done = false;
-var i = 0;
-while (!done) {
-    var key_user = prompt('USERNAME? ');
-    // Check if the username exists in the list
-    if (usernames.includes(key_user)) {
-        i = findIndex(usernames, key_user); // Use abstraction
-        // Print the username and its position
-        console.log(key_user + ' at position ' + i);
-        // Set done to true to exit the loop
-        done = true;
-    } else {
-        // Print an error message if the username is not found
-        console.log('Username not found. Try again.');
-    }
-}
-
-// Get a new username from the user
-var new_user = prompt('NEW USERNAME? ').toLowerCase();
-var new_pos;
-do {
-    // Get the position from the user
-    new_pos = prompt(`Enter position (0 - ${usernames.length}) `);
-    // Check if the position is within the valid range
-    if (new_pos < 0 || new_pos > usernames.length) {
-        // Print an error message if the position is invalid
-        console.log(`Invalid position. Please choose a position between 0 and ${usernames.length}.`);
-    }
-} while (new_pos < 0 || new_pos > usernames.length);
-// Insert the new username at the given position
-usernames.splice(new_pos, 0, new_user);
-console.log('\n');
-console.log('Updated list:');
-// Print the updated list
-printList(usernames);
-console.log('\n');
-console.log('Removing first value from list');
-// Remove the first element from the list
-usernames.shift();
-console.log('\n');
-console.log('List after shifting:');
-// Print the list after removing the first element
-printList(usernames);
-console.log('\n');
-console.log('Removing last value from list');
-// Remove the last element from the list
-usernames.pop();
-console.log('\n');
-console.log('List after popping:');
-// Print the list after removing the last element
-printList(usernames);
-do {
-    // Get a new username from the user
-    var new_user2 = prompt('What username do you want to add to the end of the list? ');
-    // Check if the username is null
-    if (new_user2 == '') {
-        // Print an error message if the username is empty
-        console.log('Please enter a username.');
-    } else {
-        // Append the new username to the end of the list
-        usernames.push(new_user2);
-        console.log('\n');
-    }
-} while (new_user2 == '');
-console.log('Updated list:');
-// Print the updated list
-printList(usernames);
-var sort_order;
-do {
-    sort_order = prompt('Sort in ascending or descending order? ');
-    if (sort_order.toLowerCase() == 'ascending') {
-        // Sort the list in ascending order
-        usernames.sort();
-    } else if (sort_order.toLowerCase() == 'descending') {
-        // Sort the list in descending order
-        usernames.sort().reverse();
-    } else {
-        // Print an error message if the sort order is invalid
-        console.log('Invalid input. Enter ascending or descending.');
-    }
-} while (sort_order.toLowerCase() !== 'ascending' && sort_order.toLowerCase() !== 'descending');
-
-// Print the final list
-console.log('\n');
-console.log('Final list: \n');
-printList(usernames);
-// Copying list
-do {
-    copy_choice = prompt('Do you want to copy the full list or a part of the list? (full/part) ');
-    if (copy_choice.toLowerCase() == 'full') {
-        // Copy the full list
-        var copied_list = usernames;
-    } else if (copy_choice.toLowerCase() == 'part') {
-        var start;
-        do {
-            // Get the start position from the user
-            start = parseInt(prompt(`Enter starting position (0 - ${usernames.length - 1}) `));
-            // Check if the start position is valid
-            if (start < 0 || start > usernames.length - 1) {
-                // Print an error message if the start position is invalid
-                console.log(`Invalid position. Please choose a position between 0 and ${usernames.length - 1}.`);
-            }
-        } while (start < 0 || start > usernames.length - 1);
-        var end;
-        do {
-            // Get the end position from the user
-            end = parseInt(prompt(`Enter ending position (${start} - ${usernames.length - 1}) `));
-            // Check if the end position is valid
-            if (end < start || end > usernames.length - 1) {
-                // Print an error message if the end position is invalid
-                console.log(`Invalid position. Please choose a position between ${start} and ${usernames.length - 1}.`);
-            }
-        } while (end < start || end > usernames.length - 1);
-        // Copy a part of the list
-        var copied_list = usernames.slice(start, end + 1);
-    } else {
-        // Print an error message if the choice is invalid
-        console.log('Invalid input. Please enter full or part.');
-    }
-} while (copy_choice.toLowerCase() != 'full' && copy_choice.toLowerCase() != 'part');
-
-// Print the copied list
-console.log('\n');
-console.log('Copied list: \n');
-printList(copied_list);

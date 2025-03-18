@@ -26,22 +26,6 @@ warped_vision
 zenith_arrow
 
 
-USERNAME? 
-Username not found. Try again.
-USERNAME? 
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
-USERNAME? ^C
-Username not found. Try again.
 USERNAME? ^C
 Username not found. Try again.
 USERNAME? ^C
