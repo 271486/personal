@@ -5,6 +5,16 @@ function printList(list) {
     }
 }
 
+
+
+// Function to find the position of a username in the list
+function findIndex(list, username) {
+    return list.indexOf(username);
+}
+
+
+
+
 // Define a list of usernames
 var usernames = [
     "mystic_shadow42",
@@ -33,6 +43,39 @@ var usernames = [
     "arctic_comet",
     "shadow_circuit"
 ];
+function sort_list(list, order) {
+    if (order == 'ascending') {
+        list.sort();
+    } else if (order == 'descending') {
+        list.sort().reverse();
+    } else {
+        console.log('Invalid order');
+    }
+}
+
+// Main Program
+function main() {
+    console.log('A - Sort')
+    console.log('B - Search')
+    console.log('C - Add')
+    console.log('D - Remove')
+    console.log('E - Copy')
+    console.log('F - Exit')
+    var choice = prompt('Enter choice: ');
+    if (choice.toLowerCase() == 'a') {
+        do {
+            var order = prompt('Enter order: [Ascending/Descending] ');
+            if (order.toLowerCase() != 'ascending' || order.toLowerCase() != 'descending') {
+                console.log('Invalid order');
+            } else {
+                
+        }
+        var order.toLowerCase() = prompt('Enter order: [Ascending/Descending] ');
+
+        sort_list(usernames, order);
+        printList(usernames);
+    }
+}
 
 // Sort the usernames list in ascending order
 usernames.sort();
@@ -49,28 +92,28 @@ while (!done) {
     var key_user = prompt('USERNAME? ');
     // Check if the username exists in the list
     if (usernames.includes(key_user)) {
-        i = usernames.indexOf(key_user)
+        i = findIndex(usernames, key_user); // Use abstraction
         // Print the username and its position
-        console.log(key_user + ' at position ' + i)
+        console.log(key_user + ' at position ' + i);
         // Set done to true to exit the loop
-        done = true
+        done = true;
     } else {
         // Print an error message if the username is not found
         console.log('Username not found. Try again.');
-    };
-};
+    }
+}
 
 // Get a new username from the user
 var new_user = prompt('NEW USERNAME? ').toLowerCase();
 var new_pos;
 do {
     // Get the position from the user
-  new_pos = prompt(`Enter position (0 - ${usernames.length}) `);
+    new_pos = prompt(`Enter position (0 - ${usernames.length}) `);
     // Check if the position is within the valid range
-  if (new_pos < 0 || new_pos > usernames.length) {
+    if (new_pos < 0 || new_pos > usernames.length) {
         // Print an error message if the position is invalid
-    console.log(`Invalid position. Please choose a position between 0 and ${usernames.length}.`);
-  };
+        console.log(`Invalid position. Please choose a position between 0 and ${usernames.length}.`);
+    }
 } while (new_pos < 0 || new_pos > usernames.length);
 // Insert the new username at the given position
 usernames.splice(new_pos, 0, new_user);
@@ -103,8 +146,8 @@ do {
         console.log('Please enter a username.');
     } else {
         // Append the new username to the end of the list
-    usernames.push(new_user2);
-    console.log('\n');
+        usernames.push(new_user2);
+        console.log('\n');
     }
 } while (new_user2 == '');
 console.log('Updated list:');
@@ -114,15 +157,15 @@ var sort_order;
 do {
     sort_order = prompt('Sort in ascending or descending order? ');
     if (sort_order.toLowerCase() == 'ascending') {
-        // Sort the list in ascending orderp
-    usernames.sort();
+        // Sort the list in ascending order
+        usernames.sort();
     } else if (sort_order.toLowerCase() == 'descending') {
         // Sort the list in descending order
-    usernames.sort().reverse();
-} else {
+        usernames.sort().reverse();
+    } else {
         // Print an error message if the sort order is invalid
         console.log('Invalid input. Enter ascending or descending.');
-    };
+    }
 } while (sort_order.toLowerCase() !== 'ascending' && sort_order.toLowerCase() !== 'descending');
 
 // Print the final list
@@ -144,7 +187,7 @@ do {
             if (start < 0 || start > usernames.length - 1) {
                 // Print an error message if the start position is invalid
                 console.log(`Invalid position. Please choose a position between 0 and ${usernames.length - 1}.`);
-            };
+            }
         } while (start < 0 || start > usernames.length - 1);
         var end;
         do {
@@ -154,7 +197,7 @@ do {
             if (end < start || end > usernames.length - 1) {
                 // Print an error message if the end position is invalid
                 console.log(`Invalid position. Please choose a position between ${start} and ${usernames.length - 1}.`);
-            };
+            }
         } while (end < start || end > usernames.length - 1);
         // Copy a part of the list
         var copied_list = usernames.slice(start, end + 1);
