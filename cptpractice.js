@@ -43,7 +43,6 @@ var usernames = [
 
 function search(key_user) {
     var found = false;
-    var index = -1;
     // Loop until the username is found
     do {
         if (usernames.includes(key_user)) {
