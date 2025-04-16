@@ -5,15 +5,6 @@ function main_function() {
     console.log('Welcome to "restaurant name"s ordering system.');
     let done = false;
     var priceT = 0;
-    var tempOrder = {
-        '1': { name: 'Boneless Wings', price: 14.99},
-        '2': { name: 'Mozzarella Sticks', price: 7.49},
-        '3': { name: 'Loaded French Fries', price: 9.99},
-        '4': { name: 'Breadsticks', price: 5.99},
-        '5': { name: 'Sliders', price: 9.99},
-        '6': { name: 'Nachos', price: 8.99}
-    };
-    
     var orders = {};
     do {
         console.log('Main Menu');
@@ -43,7 +34,7 @@ function main_function() {
         } else if (choice == 'g') {
             modify_order(orders);
         } else if (choice == 'h') {
-            place_order(tempOrder);
+            place_order(orders);
         } else if (choice == 'i') {
             done = true;
             console.log('Exiting');
@@ -283,14 +274,12 @@ function modify_order(order) {
     } while (change == 'yes' && change == 'no')
 }
 
-function place_order(order) {
+function place_order(priceT, order) {
     let finished = prompt('Are you done ordering? [Yes/No]: ').toLowerCase()
     if (finished == 'yes') {
-        for (let key1 in order) {
-            if (order.hasOwnProperty(key1)) {
-                priceT += order[key1].price * order[key1].quantity
-                key1++;
-            }}
+        for (let i in order) {
+            priceT += order[i].price
+        }
         console.log(`Subtotal: ${priceT}`)
     }
 }
