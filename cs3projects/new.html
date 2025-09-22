@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mohammed Khalil - Motronics</title>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+	<style>
+		body {
+			margin: 0;
+			font-family: 'Montserrat', Arial, sans-serif;
+			background: #f2f2f5;
+		}
+		.navbar {
+			display: flex;
+			align-items: center;
+			background: #000;
+			color: #fff;
+			height: 50px;
+			padding: 0 10px;
+		}
+		.logo {
+			display: flex;
+			align-items: center;
+			margin-right: 10px;
+		}
+		.logo-img {
+			width: 60px;
+			height: 48px;
+			background: transparent;
+			border-radius: 5px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-right: 8px;
+		}
+		.logo-img img {
+			max-width: 100%;
+			height: auto;
+			display: block;
+		}
+		.logo-text {
+			font-size: 14px;
+			color: #00ff99;
+			font-weight: bold;
+		}
+		.nav-home {
+			width: 40px;
+			height: 40px;
+			background: #fff;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 10px;
+		}
+		.nav-home svg {
+			width: 24px;
+			height: 24px;
+			fill: #000;
+		}
+		.nav-search {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+		}
+		.nav-search input {
+			width: 350px;
+			height: 32px;
+			border-radius: 20px;
+			border: none;
+			padding: 0 15px;
+			font-size: 16px;
+		}
+		.nav-menu {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+		}
+		.nav-menu-icon {
+			width: 40px;
+			height: 40px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+		}
+		.nav-menu-icon span {
+			display: block;
+			width: 30px;
+			height: 4px;
+			background: #fff;
+			margin: 3px 0;
+			border-radius: 2px;
+		}
+		.container {
+			display: flex;
+			height: calc(100vh - 50px);
+		}
+		.sidebar {
+			width: 30%;
+			min-width: 300px;
+			background: #fff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			border-right: 3px solid #111;
+			padding-top: 40px;
+		}
+		.sidebar h1 {
+			font-size: 60px;
+			margin: 0 0 20px 0;
+			font-family: 'Montserrat', Arial, sans-serif;
+			font-weight: 700;
+			text-align: center;
+		}
+		.sidebar ul {
+			list-style: disc inside;
+			padding: 0;
+			margin: 0;
+			font-size: 24px;
+		}
+		.sidebar li {
+			margin: 15px 0;
+			text-align: left;
+		}
+		.sidebar span {
+			margin-left: 20px;
+		}
+		.main-content {
+			flex: 1;
+			padding: 40px 30px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-rows: repeat(3, 1fr);
+			gap: 30px 40px;
+			height: 100%;
+		}
+		.card {
+			background: #b3b3b3;
+			border-radius: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 22px;
+			color: #222;
+			position: relative;
+		}
+		.card.selected {
+			border: 3px solid #a259f7;
+		}
+		.card-label {
+			position: absolute;
+			left: 10px;
+			bottom: 5px;
+			font-size: 18px;
+			color: #222;
+		}
+		@media (max-width: 900px) {
+			.container {
+				flex-direction: column;
+			}
+			.sidebar {
+				width: 100%;
+				min-width: unset;
+				border-right: none;
+				border-bottom: 3px solid #111;
+				padding-top: 20px;
+			}
+			.main-content {
+				padding: 20px 10px;
+			}
+			.card-grid {
+				gap: 15px 10px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="navbar">
+		<div class="logo">
+			<div class="logo-img">
+				<img src="motronics-logo.png" alt="Motronics logo">
+			</div>
+		</div>
+		<div class="nav-home">
+			<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+		</div>
+		<div class="nav-search">
+			<input type="text" placeholder="Search">
+		</div>
+		<div class="nav-menu">
+			<div class="nav-menu-icon">
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="sidebar">
+			<h1>Mohammed<br>Khalil</h1>
+			<ul>
+				<li><span>About Me</span></li>
+				<li><span>Contact Information</span></li>
+				<li><span>Frequently Asked Questions</span></li>
+			</ul>
+		</div>
+		<div class="main-content">
+			<div class="card-grid">
+				<div class="card"><span class="card-label">#1</span></div>
+				<div class="card"><span class="card-label">#2</span></div>
+				<div class="card"><span class="card-label">#3</span></div>
+				<div class="card"><span class="card-label">#4</span></div>
+				<div class="card"><span class="card-label">#5</span></div>
+				<div class="card"><span class="card-label">#6</span></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

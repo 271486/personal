@@ -4,14 +4,13 @@ var prompt = require('prompt-sync')();
 function main_function() {
     console.log('Welcome to "restaurant name"s ordering system.');
     let done = false;
-    var priceT = 0;
     var tempOrder = {
-        '1': { name: 'Boneless Wings', price: 14.99},
-        '2': { name: 'Mozzarella Sticks', price: 7.49},
-        '3': { name: 'Loaded French Fries', price: 9.99},
-        '4': { name: 'Breadsticks', price: 5.99},
-        '5': { name: 'Sliders', price: 9.99},
-        '6': { name: 'Nachos', price: 8.99}
+        '1': { name: 'Boneless Wings', price: 14.99, quantity: 3},
+        '2': { name: 'Mozzarella Sticks', price: 7.49, quantity: 3},
+        '3': { name: 'Loaded French Fries', price: 9.99, quantity: 3},
+        '4': { name: 'Breadsticks', price: 5.99, quantity: 3},
+        '5': { name: 'Sliders', price: 9.99, quantity: 3},
+        '6': { name: 'Nachos', price: 8.99, quantity: 3}
     };
     
     var orders = {};
@@ -284,6 +283,7 @@ function modify_order(order) {
 }
 
 function place_order(order) {
+    let priceT = 0;
     let finished = prompt('Are you done ordering? [Yes/No]: ').toLowerCase()
     if (finished == 'yes') {
         for (let key1 in order) {
@@ -292,6 +292,10 @@ function place_order(order) {
                 key1++;
             }}
         console.log(`Subtotal: ${priceT}`)
+        let tax = parseInt(prompt('What is your state sales tax in percent? [6% = 6]: '))
+        let tipChoice = prompt('Do you want to leave a tip? ')
+        let method
     }
 }
 main_function();
+
