@@ -1,228 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
 	<title>Mohammed Khalil - Motronics</title>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 	<style>
-		body {
-			margin: 0;
-			font-family: 'Montserrat', Arial, sans-serif;
-			background: #f2f2f5;
-		}
-		.navbar {
-			display: flex;
-			align-items: center;
-			background: #000;
-			color: #fff;
-			height: 50px;
-			padding: 0 10px;
-		}
-		.logo {
-			display: flex;
-			align-items: center;
-			margin-right: 10px;
-		}
-		.logo-img {
-			width: 60px;
-			height: 48px;
-			background: transparent;
-			border-radius: 5px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-right: 8px;
-		}
-		.logo-img img {
-			max-width: 100%;
-			height: auto;
-			display: block;
-		}
-		.logo-text {
-			font-size: 14px;
-			color: #00ff99;
-			font-weight: bold;
-		}
-		.nav-home {
-			width: 40px;
-			height: 40px;
-			background: #fff;
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin: 0 10px;
-		}
-		.nav-home svg {
-			width: 24px;
-			height: 24px;
-			fill: #000;
-		}
-		.nav-search {
-			flex: 1;
-			display: flex;
-			justify-content: center;
-		}
-		.nav-search input {
-			width: 350px;
-			height: 32px;
-			border-radius: 20px;
-			border: none;
-			padding: 0 15px;
-			font-size: 16px;
-		}
-		.nav-menu {
-			margin-left: auto;
-			display: flex;
-			align-items: center;
-		}
-		.nav-menu-icon {
-			width: 40px;
-			height: 40px;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			cursor: pointer;
-		}
-		.nav-menu-icon span {
-			display: block;
-			width: 30px;
-			height: 4px;
-			background: #fff;
-			margin: 3px 0;
-			border-radius: 2px;
-		}
-		.container {
-			display: flex;
-			height: calc(100vh - 50px);
-		}
-		.sidebar {
-			width: 30%;
-			min-width: 300px;
-			background: #fff;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: flex-start;
-			border-right: 3px solid #111;
-			padding-top: 40px;
-		}
-		.sidebar h1 {
-			font-size: 60px;
-			margin: 0 0 20px 0;
-			font-family: 'Montserrat', Arial, sans-serif;
-			font-weight: 700;
-			text-align: center;
-		}
-		.sidebar ul {
-			list-style: disc inside;
-			padding: 0;
-			margin: 0;
-			font-size: 24px;
-		}
-		.sidebar li {
-			margin: 15px 0;
-			text-align: left;
-		}
-		.sidebar span {
-			margin-left: 20px;
-		}
-		.main-content {
-			flex: 1;
-			padding: 40px 30px;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-		}
-		.card-grid {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			grid-template-rows: repeat(3, 1fr);
-			gap: 30px 40px;
-			height: 100%;
-		}
-		.card {
-			background: #b3b3b3;
-			border-radius: 32px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 22px;
-			color: #222;
-			position: relative;
-		}
-		.card.selected {
-			border: 3px solid #a259f7;
-		}
-		.card-label {
-			position: absolute;
-			left: 10px;
-			bottom: 5px;
-			font-size: 18px;
-			color: #222;
-		}
-		@media (max-width: 900px) {
-			.container {
-				flex-direction: column;
-			}
-			.sidebar {
-				width: 100%;
-				min-width: unset;
-				border-right: none;
-				border-bottom: 3px solid #111;
-				padding-top: 20px;
-			}
-			.main-content {
-				padding: 20px 10px;
-			}
-			.card-grid {
-				gap: 15px 10px;
-			}
-		}
+		body{margin:0;font-family:'Montserrat',Arial,sans-serif;background:#f2f2f5}
+		.navbar{display:flex;align-items:center;background:#000;color:#fff;height:50px;padding:0 10px}
+		.logo-img{width:60px;height:48px;display:flex;align-items:center;justify-content:center;margin-right:8px}
+		.nav-home{width:40px;height:40px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 10px}
+		.nav-search{flex:1;display:flex;justify-content:center}
+		.nav-search input{width:350px;height:32px;border-radius:20px;border:none;padding:0 15px;font-size:16px}
+		.nav-menu{margin-left:auto;display:flex;align-items:center}
+		.nav-menu-icon{width:40px;height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer}
+		.nav-menu-icon span{display:block;width:30px;height:4px;background:#fff;margin:3px 0;border-radius:2px}
+		.dropdown-toggle{font-family:'Montserrat', Arial, sans-serif;font-size:24px;color:#000;background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center}
+		/* triangle: points right when collapsed, down when expanded */
+		.dropdown-toggle:before{content:'';display:inline-block;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid #000;margin-right:10px;transform:rotate(0deg);transition:transform 0.15s ease;transform-origin:center}
+		.dropdown-toggle.expanded:before{transform:rotate(90deg)}
+		.container{display:flex;height:calc(100vh - 50px);align-items:flex-start}
+		/* when sidebar is closed the main content becomes full width */
+		/* animate sidebar closing: transition width, opacity, and padding for a smoother slower effect */
+		.sidebar{width:30%;min-width:300px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-right:3px solid #111;padding-top:40px;box-sizing:border-box;overflow:auto;position:sticky;top:50px;height:calc(100vh - 50px)}
+		.container.sidebar-closed .sidebar{width:0;min-width:0;padding-top:0;padding-left:0;padding-right:0;opacity:0;border-right-width:0;overflow:hidden}
+		.container.sidebar-closed .main-content{flex:1 1 100%;width:100%;padding:60px 40px}
+		/* slower transitions for sidebar collapse */
+		.sidebar, .main-content{transition:width 420ms ease,opacity 360ms ease, padding 360ms ease, border-right-width 420ms ease}
+		.sidebar{width:30%;min-width:300px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-right:3px solid #111;padding-top:40px;position:sticky;top:50px;height:calc(100vh - 50px)}
+		.sidebar h1{font-size:60px;margin:0 0 20px 0;text-align:center}
+		.sidebar ul{list-style:disc inside;padding:0;margin:0;font-size:24px}
+		.sidebar li{margin:15px 0;text-align:left}
+		.sidebar a{color:inherit;text-decoration:none}
+		.sidebar a.active{font-weight:700;color:#0b63d6}
+		/* portfolio list styles */
+		#portfolioList.collapsed{display:none}
+		#portfolioList{display:block}
+		.dropdown-toggle{background:transparent}
+		/* render a black bullet for regular items; dropdown-li will not show this pseudo-bullet */
+		.sidebar ul{list-style:none;padding:0;margin:0}
+		.sidebar ul li{margin:15px 0;text-align:left;display:flex;align-items:center}
+		.sidebar ul li:not(.dropdown-li):before{content:'•';color:#000;margin-right:10px;font-size:18px;display:inline-block;width:18px;text-align:center}
+		.sidebar ul li a{vertical-align:middle;color:#000;text-decoration:none}
+		.main-content{flex:1;padding:0 30px 12px 30px;display:flex;flex-direction:column;justify-content:flex-start;overflow:auto}
+		.section{display:none}
+		.section.active{display:block}
+	/* grid uses a fixed row height so all tiles keep the same pixel ratio */
+	/* --tile-row-height controls the pixel height of each grid row (images will keep this height) */
+	.card-grid{--tile-row-height:240px;display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:var(--tile-row-height);gap:30px 40px}
+	.card{background:#b3b3b3;border-radius:32px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;font-size:22px;color:#222;position:relative;transition:transform 140ms ease,box-shadow 140ms ease;overflow:hidden}
+	/* keep a subtle shadow on hover but avoid translating the card to prevent perceived zoom */
+	.card:hover{box-shadow:0 10px 30px rgba(0,0,0,0.12)}
+	/* images inside cards should fill the top of the card and keep consistent pixel height */
+	.card img{width:100%;height:var(--tile-row-height);object-fit:cover;display:block;border-radius:28px 28px 0 0;transition:none;transform:none;max-height:var(--tile-row-height);z-index:0}
+	/* ensure images keep the same pixel height as the grid row so they don't scale when the tile expands */
+	.card > img{display:block;width:100%;height:var(--tile-row-height);object-fit:cover;max-height:var(--tile-row-height);transition:none;transform:none}
+	/* when a tile expands, explicitly keep the image size unchanged */
+	.tile.expanded .card img{height:var(--tile-row-height);max-height:var(--tile-row-height);transition:none;transform:none}
+	/* Force no transform on cards/images to prevent any zoom from CSS transforms */
+	.card, .tile.expanded .card { transform: none !important; }
+	.card img, .tile.expanded .card img { transform: none !important; transition: none !important; }
+		/* tile wrapper to support show/hide description overlay */
+		.card-grid .tile{display:flex;flex-direction:column;height:100%}
+		.card{height:100%;width:100%;cursor:pointer;position:relative}
+		/* description appears as an overlay at the bottom of the card when .show-desc is present */
+		.card-desc{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,0.95);padding:12px;box-shadow:0 -8px 20px rgba(0,0,0,0.06);max-height:0;overflow:hidden;opacity:0;transition:opacity 180ms ease,max-height 260ms ease,padding 180ms ease;color:#111;z-index:2}
+		.card.show-desc .card-desc{opacity:1;padding:12px;max-height:220px}
+		.card.selected{border:3px solid #a259f7}
+		.card-label{position:absolute;left:10px;bottom:5px;font-size:18px;color:#222}
+		.about-card,.contact-card{background:#fff;padding:24px;border-radius:12px;max-width:800px;box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+		form input,form textarea{width:100%;padding:10px;margin-top:6px;border:1px solid #e2e2e6;border-radius:6px}
+		button{margin-top:12px;padding:10px 14px;border:none;background:#0b63d6;color:#fff;border-radius:6px;cursor:pointer}
+	@media (max-width:900px){.container{flex-direction:column;height:auto}.sidebar{width:100%;min-width:unset;border-right:none;border-bottom:3px solid #111;padding-top:20px}.main-content{padding:20px 10px}.card-grid{gap:15px 10px;--tile-row-height:120px}.nav-search input{width:200px}}
 	</style>
 </head>
 <body>
 	<div class="navbar">
 		<div class="logo">
-			<div class="logo-img">
-				<img src="motronics-logo.png" alt="Motronics logo">
-			</div>
+			<div class="logo-img"><img src="motronics-logo.png" alt="Motronics" style="max-height:36px"></div>
 		</div>
+
 		<div class="nav-home">
-			<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+			<a href="#home" aria-label="Home" style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:inherit;text-decoration:none">
+				<svg viewBox="0 0 24 24" width="20" height="20"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+			</a>
 		</div>
+
 		<div class="nav-search">
 			<input type="text" placeholder="Search">
 		</div>
+
 		<div class="nav-menu">
-			<div class="nav-menu-icon">
-				<span></span>
-				<span></span>
-				<span></span>
-			</div>
+			<div class="nav-menu-icon"><span></span><span></span><span></span></div>
 		</div>
 	</div>
+
 	<div class="container">
-		<div class="sidebar">
+		<nav class="sidebar" aria-label="Main">
 			<h1>Mohammed<br>Khalil</h1>
-			<ul>
-				<li><span>About Me</span></li>
-				<li><span>Contact Information</span></li>
-				<li><span>Frequently Asked Questions</span></li>
-			</ul>
-		</div>
-		<div class="main-content">
-			<div class="card-grid">
-				<div class="card"><span class="card-label">#1</span></div>
-				<div class="card"><span class="card-label">#2</span></div>
-				<div class="card"><span class="card-label">#3</span></div>
-				<div class="card"><span class="card-label">#4</span></div>
-				<div class="card"><span class="card-label">#5</span></div>
-				<div class="card"><span class="card-label">#6</span></div>
-			</div>
-		</div>
+					<ul>
+						<li class="dropdown-li">
+										<div class="dropdown">
+											<button id="portfolioToggle" class="dropdown-toggle" aria-expanded="false" aria-controls="portfolioList">Portfolio</button>
+								<ul id="portfolioList" style="list-style: none; padding-left: 10px; margin-top:8px;">
+									<li><a href="#portfolio-1" data-target="portfolio-1">Python</a></li>
+									<li><a href="#portfolio-2" data-target="portfolio-2">JavaScript</a></li>
+									<li><a href="#portfolio-3" data-target="portfolio-3">Minecraft MakeCode</a></li>
+									<li><a href="#portfolio-4" data-target="portfolio-4">Photoshop</a></li>
+									<li><a href="#portfolio-5" data-target="portfolio-5">Portfolio 5</a></li>
+											</ul>
+							</div>
+						</li>
+						<li><a href="#about" data-target="about">About Me</a></li>
+						<li><a href="#contact" data-target="contact">Contact Me</a></li>
+					</ul>
+		</nav>
+
+		<main class="main-content">
+				<section id="home" class="section" tabindex="-1">
+					<div style="width:100%;display:flex;flex-direction:column;align-items:center;">
+						<!-- Welcome box centered at the top of the main content -->
+						<div style="width:100%;max-width:900px;background:#fff;border-radius:12px;padding:24px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.06);font-size:2rem;font-weight:700;letter-spacing:0.5px;text-align:center;">Welcome to my portfolio</div>
+
+						<!-- Images placed to the right under the welcome box -->
+						<div style="width:100%;max-width:900px;display:flex;justify-content:flex-end;gap:24px;">
+							<img src="motronics-logo.png" alt="Motronics logo" style="height:300px;width:auto;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.10);">
+							<img src="motronics-logo1.png" alt="Motronics logo" style="height:300px;width:auto;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.10);">
+						</div>
+					</div>
+				</section>
+
+				<!-- Portfolio sections -->
+				<section id="portfolio-1" class="section" aria-hidden="true" tabindex="-1">
+					<div class="about-card">
+						<h2>Python</h2>
+						<p>My Python projects. Click any image to view details.</p>
+					</div>
+					<div class="card-grid" aria-live="polite">
+						<div class="card" data-desc="College Tuition Cost Project which calculates cost on a number of choices such as number of credits, meal plan, housing, and a built in loan calculator"><img src="python/python1.png" alt="Python project 1"><span class="card-label">#1</span></div>
+							<div class="card" data-desc="Created a restaurant menu ordering system which uses SQLite 3 to store food items. You can add or delete food items or groups. Calculates for tip, fees, and tax as well as an admin menu."><img src="python/python2.png" alt="Python project 2"><span class="card-label">#2</span></div>
+							<div class="card" data-desc="Simplified version of Project #2. Does not use SQLite 3 and has a constant menu selection. No admin menu."><img src="python/python3.png" alt="Python project 3"><span class="card-label">#3</span></div>
+							<div class="card" data-desc="Text-based fighting story game where you are able to create your own character and choose your own path. Uses classes."><img src="python/python4.png" alt="Python project 4"><span class="card-label">#4</span></div>
+							<div class="card" data-desc="Created a gradebook chart using SQLite3 where student information/grades are able to be updated, removed, or create new student info."><img src="python/python5.png" alt="Python project 5"><span class="card-label">#5</span></div>
+							<div class="card" data-desc="Object oriented code used to list information such as the date, location, type, magnitude, and duration of a solar eclipse that has happened in the past."><img src="python/python6.png" alt="Python project 6"><span class="card-label">#6</span></div>
+							<div class="card" data-desc="Object oriented code used to simulate a story game of bugs."><img src="python/python7.png" alt="Python project 7"><span class="card-label">#7</span></div>
+							<div class="card" data-desc="Code used to open CSV files, read their contents, and display the contents or perform calculations with it."><img src="python/python8.png" alt="Python project 8"><span class="card-label">#8</span></div>
+					</div>
+				</section>
+				<section id="portfolio-2" class="section" aria-hidden="true" tabindex="-1">
+					<div class="about-card">
+						<h2>JavaScript</h2>
+						<p>My JavaScript Projects. Click any image to view details.</p>
+					</div>
+					<div class="card-grid" aria-live="polite">
+						<div class="card" data-desc="This program lets users search, edit, and sort a username list, then copy all or part of it. It interacts through prompts and prints updates after each step."><span class="card-label">#1</span></div>
+						<div class="card" data-desc="This program demonstrates different types of functions: one that performs tasks internally, one that returns a value, and one that calls another function. It calculates a sum, adds numbers, checks a condition, and shows function calls within functions."><span class="card-label">#2</span></div>
+						<div class="card" data-desc="JavaScript #3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="JavaScript #4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="JavaScript #5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="JavaScript #6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="JavaScript #7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="JavaScript #8"><span class="card-label">#8</span></div>
+					</div>
+				</section>
+				<section id="portfolio-3" class="section" aria-hidden="true" tabindex="-1">
+					<div class="about-card">
+						<h2>Minecraft MakeCode</h2>
+						<p>My MakeCode projects. Click any image to view details.</p>
+					</div>
+					<div class="card-grid" aria-live="polite">
+						<div class="card" data-desc="MakeCode #1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="MakeCode #2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="MakeCode #3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="MakeCode #4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="MakeCode #5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="MakeCode #6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="MakeCode #7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="MakeCode #8"><span class="card-label">#8</span></div>
+					</div>
+				</section>
+				<section id="portfolio-4" class="section" aria-hidden="true" tabindex="-1">
+					<div class="about-card">
+						<h2>Photoshop</h2>
+						<p>Photoshop work and mockups.</p>
+					</div>
+					<div class="card-grid" aria-live="polite">
+						<div class="card" data-desc="Photoshop #1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="Photoshop #2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="Photoshop #3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="Photoshop #4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="Photoshop #5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="Photoshop #6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="Photoshop #7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="Photoshop #8"><span class="card-label">#8</span></div>
+					</div>
+				</section>
+				<section id="portfolio-5" class="section" aria-hidden="true" tabindex="-1">
+					<div class="about-card">
+						<h2>Portfolio 5</h2>
+						<p>Additional portfolio items.</p>
+					</div>
+					<div class="card-grid" aria-live="polite">
+						<div class="card" data-desc="Testttttt"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="Portfolio 5 #2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="Portfolio 5 #3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="Portfolio 5 #4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="Portfolio 5 #5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="Portfolio 5 #6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="Portfolio 5 #7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="Portfolio 5 #8"><span class="card-label">#8</span></div>
+					</div>
+				</section>
+
+			<section id="about" class="section" aria-hidden="true" tabindex="-1">
+				<div class="about-card">
+					<h2>About Me</h2>
+					<p>My name is Mohammed Khalil, and I am a Junior in the Computer Science program at Passaic County Technical Institute. I have always been interested in technology and how it can be used to solve real-world problems, which is why I enjoy learning about coding, programming, and problem-solving. I also like working on projects that challenge me to think critically and creatively. Outside of school, I work and spend time with friends. My goal is to keep building my skills in computer science so that I can prepare for college and future opportunities in the tech field.</p>
+				</div>
+			</section>
+
+			<section id="contact" class="section" aria-hidden="true" tabindex="-1">
+				<div class="contact-card">
+					<form id="contactForm" action="#" onsubmit="alert('Demo form — replace with backend'); return false;">
+						<label for="name">Name</label>
+						<input id="name" name="name" required>
+						<label for="email">Email</label>
+						<input id="email" name="email" type="email" required>
+						<label for="message">Message</label>
+						<textarea id="message" name="message" rows="6" required></textarea>
+						<button type="submit">Send</button>
+					</form>
+				</div>
+			</section>
+		</main>
 	</div>
+
+	<script>
+		const sections = Array.from(document.querySelectorAll('.section'));
+		const links = Array.from(document.querySelectorAll('.sidebar a'));
+		const portfolioToggle = document.getElementById('portfolioToggle');
+		const portfolioList = document.getElementById('portfolioList');
+		const container = document.querySelector('.container');
+		const navMenuIcon = document.querySelector('.nav-menu-icon');
+
+		// CSS-controlled class names
+		portfolioList.classList.add('collapsed');
+		// start with sidebar visible on load unless a deep-link to a portfolio/section
+		function closeSidebar() {
+			const side = document.querySelector('.sidebar');
+			// if already closed, no-op
+			if (container.classList.contains('sidebar-closed')) return;
+			container.classList.add('sidebar-closed');
+			// set aria-hidden after the transition completes so screen-readers don't jump
+			const onEnd = (e) => {
+				if (e.propertyName === 'width') {
+					side.setAttribute('aria-hidden','true');
+					side.removeEventListener('transitionend', onEnd);
+				}
+			};
+			side.addEventListener('transitionend', onEnd);
+		}
+
+		function openSidebar() {
+			const side = document.querySelector('.sidebar');
+			container.classList.remove('sidebar-closed');
+			// ensure aria-hidden is false immediately so focusable elements are reachable
+			side.setAttribute('aria-hidden','false');
+		}
+
+		function showSection(name) {
+			sections.forEach(s => {
+				const active = s.id === name;
+				s.classList.toggle('active', active);
+				s.setAttribute('aria-hidden', !active);
+			});
+			links.forEach(a => a.classList.toggle('active', a.dataset.target === name));
+		}
+
+		// Tile expand/collapse logic
+		function initTiles() {
+			const grids = Array.from(document.querySelectorAll('.card-grid'));
+			grids.forEach(grid => {
+				Array.from(grid.querySelectorAll('.card')).forEach(card => {
+					// if already wrapped skip
+					if (card.parentElement.classList.contains('tile')) return;
+					const tile = document.createElement('div');
+					tile.className = 'tile';
+					card.parentElement.insertBefore(tile, card);
+					tile.appendChild(card);
+					const desc = document.createElement('div');
+					desc.className = 'card-desc';
+					// determine section title (e.g., 'Python') so we can create unique placeholders like 'Python #1'
+					const section = card.closest('.section');
+					let topic = 'Item';
+					if (section) {
+						const h2 = section.querySelector('h2');
+						if (h2) topic = h2.textContent.trim();
+					}
+					// count this card's index among its siblings for numbering
+					const siblings = Array.from(card.parentElement.querySelectorAll('.card'));
+					const index = siblings.indexOf(card) + 1;
+					// If a data-desc attribute is present on the card, use that (edit in code/HTML).
+					// Otherwise fall back to a generated placeholder like 'Python #1'.
+					const dataDesc = card.getAttribute('data-desc') || card.dataset.desc;
+					desc.textContent = dataDesc ? dataDesc : `${topic} #${index}`;
+					// append description inside the card so absolute positioning works relative to the card
+					card.appendChild(desc);
+					tile.appendChild(card);
+					// click to toggle description overlay (no layout change) — ensure single-open behavior
+					card.style.cursor = 'pointer';
+					card.setAttribute('role','button');
+					card.setAttribute('aria-expanded','false');
+					card.addEventListener('click', () => {
+						const wasOpen = card.classList.contains('show-desc');
+						// close any other open descriptions
+						collapseAllTiles();
+						if (!wasOpen) {
+							card.classList.add('show-desc');
+							card.setAttribute('aria-expanded','true');
+						} else {
+							card.setAttribute('aria-expanded','false');
+						}
+					});
+					// keyboard support
+					card.setAttribute('tabindex','0');
+					card.addEventListener('keydown', (e)=>{
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							const wasOpen = card.classList.contains('show-desc');
+							collapseAllTiles();
+							if (!wasOpen) {
+								card.classList.add('show-desc');
+								card.setAttribute('aria-expanded','true');
+							} else {
+								card.setAttribute('aria-expanded','false');
+							}
+						}
+					});
+				});
+			});
+		}
+
+				function collapseAllTiles() {
+					Array.from(document.querySelectorAll('.card.show-desc')).forEach(c => {
+						c.classList.remove('show-desc');
+						const inner = c.querySelector('[role="button"]');
+						if (inner) inner.setAttribute('aria-expanded','false');
+					});
+				}
+
+		function onHashChange() {
+			const hash = (location.hash || '#home').replace('#','');
+			const valid = sections.some(s => s.id === hash) ? hash : 'home';
+			showSection(valid);
+			const el = document.getElementById(valid);
+			if (el) el.focus();
+		}
+
+		// Ensure portfolio dropdown opens when a portfolio section is shown
+		function openPortfolioIfNeeded(sectionId) {
+			if (sectionId.startsWith('portfolio-')) {
+				portfolioList.classList.remove('collapsed');
+				portfolioToggle.classList.add('expanded');
+				portfolioToggle.setAttribute('aria-expanded', 'true');
+			}
+		}
+
+		links.forEach(a => a.addEventListener('click', e => {
+			e.preventDefault();
+			location.hash = a.getAttribute('href');
+		}));
+
+		// Close sidebar on navigation to any non-home section
+		function closeSidebarOnNavigate(target) {
+			if (target !== 'home') closeSidebar();
+			else openSidebar();
+		}
+
+		portfolioToggle.addEventListener('click', () => {
+			const expanded = portfolioToggle.classList.toggle('expanded');
+			portfolioToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+			portfolioList.classList.toggle('collapsed', !expanded);
+		});
+
+		// keyboard support for toggles (Space or Enter)
+		portfolioToggle.addEventListener('keydown', (e) => {
+			if (e.key === ' ' || e.key === 'Enter') {
+				e.preventDefault();
+				portfolioToggle.click();
+			}
+		});
+
+		navMenuIcon.setAttribute('tabindex', '0');
+		navMenuIcon.setAttribute('role', 'button');
+		navMenuIcon.setAttribute('aria-label', 'Toggle sidebar');
+		navMenuIcon.addEventListener('keydown', (e) => {
+			if (e.key === ' ' || e.key === 'Enter') {
+				e.preventDefault();
+				navMenuIcon.click();
+			}
+		});
+
+		// nav menu icon should toggle sidebar visibility (useful after navigation closed it)
+		navMenuIcon.addEventListener('click', () => {
+			if (container.classList.contains('sidebar-closed')) openSidebar();
+			else closeSidebar();
+		});
+
+		window.addEventListener('hashchange', onHashChange, false);
+		// wrap original to also open portfolio if needed and close sidebar when navigating
+		const originalOnHash = onHashChange;
+		onHashChange = function() { 
+			// collapse any expanded tiles when navigating
+			collapseAllTiles();
+			originalOnHash(); 
+			const target = (location.hash||'#home').replace('#','');
+			openPortfolioIfNeeded(target);
+			closeSidebarOnNavigate(target);
+		};
+		// initialize tiles and run initial hash handler
+		initTiles();
+		onHashChange();
+	</script>
 </body>
 </html>
