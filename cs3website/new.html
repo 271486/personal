@@ -72,6 +72,13 @@
 		form input,form textarea{width:100%;padding:10px;margin-top:6px;border:1px solid #e2e2e6;border-radius:6px}
 		button{margin-top:12px;padding:10px 14px;border:none;background:#0b63d6;color:#fff;border-radius:6px;cursor:pointer}
 	@media (max-width:900px){.container{flex-direction:column;height:auto}.sidebar{width:100%;min-width:unset;border-right:none;border-bottom:3px solid #111;padding-top:20px}.main-content{padding:20px 10px}.card-grid{gap:15px 10px;--tile-row-height:120px}.nav-search input{width:200px}}
+			/* lightbox/modal for viewing images */
+			.lightbox-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:9999}
+			.lightbox-backdrop.active{display:flex}
+			.lightbox{max-width:92vw;max-height:92vh;display:flex;flex-direction:column;gap:12px;align-items:center}
+			.lightbox img{max-width:100%;max-height:80vh;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+			.lightbox .meta{color:#fff;text-align:center}
+			.lightbox .meta a{color:#ffd;display:inline-block;margin-top:6px;background:#0b63d6;padding:8px 10px;border-radius:6px;text-decoration:none}
 	</style>
 </head>
 <body>
@@ -105,9 +112,13 @@
 								<ul id="portfolioList" style="list-style: none; padding-left: 10px; margin-top:8px;">
 									<li><a href="#portfolio-1" data-target="portfolio-1">Python</a></li>
 									<li><a href="#portfolio-2" data-target="portfolio-2">JavaScript</a></li>
-									<li><a href="#portfolio-3" data-target="portfolio-3">Minecraft MakeCode</a></li>
+									<li><a href="#portfolio-3" data-target="portfolio-3">HTML</a></li>
 									<li><a href="#portfolio-4" data-target="portfolio-4">Photoshop</a></li>
-									<li><a href="#portfolio-5" data-target="portfolio-5">Portfolio 5</a></li>
+									<li><a href="#portfolio-5" data-target="portfolio-5">Mathematical Equations</a></li>
+									<li><a href="#portfolio-6" data-target="portfolio-6">Project Management 1</a></li>
+									<li><a href="#portfolio-7" data-target="portfolio-7">Project Management 2</a></li>
+									<li><a href="#portfolio-8" data-target="portfolio-8">Project Management 3</a></li>
+									<li><a href="#portfolio-9" data-target="portfolio-9">Gmetrix</a></li>
 											</ul>
 							</div>
 						</li>
@@ -145,6 +156,8 @@
 							<div class="card" data-desc="Object oriented code used to list information such as the date, location, type, magnitude, and duration of a solar eclipse that has happened in the past."><img src="python/python6.png" alt="Python project 6"><span class="card-label">#6</span></div>
 							<div class="card" data-desc="Object oriented code used to simulate a story game of bugs."><img src="python/python7.png" alt="Python project 7"><span class="card-label">#7</span></div>
 							<div class="card" data-desc="Code used to open CSV files, read their contents, and display the contents or perform calculations with it."><img src="python/python8.png" alt="Python project 8"><span class="card-label">#8</span></div>
+								<div class="card" data-desc="Final Python project: data visualization demo"><img src="python/python9.png" alt="Python project 9"><span class="card-label">#9</span></div>
+								<div class="card" data-desc="Python utilities collection and scripts"><img src="python/python10.png" alt="Python project 10"><span class="card-label">#10</span></div>
 					</div>
 				</section>
 				<section id="portfolio-2" class="section" aria-hidden="true" tabindex="-1">
@@ -153,66 +166,123 @@
 						<p>My JavaScript Projects. Click any image to view details.</p>
 					</div>
 					<div class="card-grid" aria-live="polite">
-						<div class="card" data-desc="This program lets users search, edit, and sort a username list, then copy all or part of it. It interacts through prompts and prints updates after each step."><span class="card-label">#1</span></div>
-						<div class="card" data-desc="This program demonstrates different types of functions: one that performs tasks internally, one that returns a value, and one that calls another function. It calculates a sum, adds numbers, checks a condition, and shows function calls within functions."><span class="card-label">#2</span></div>
-						<div class="card" data-desc="JavaScript #3"><span class="card-label">#3</span></div>
-						<div class="card" data-desc="JavaScript #4"><span class="card-label">#4</span></div>
-						<div class="card" data-desc="JavaScript #5"><span class="card-label">#5</span></div>
-						<div class="card" data-desc="JavaScript #6"><span class="card-label">#6</span></div>
-						<div class="card" data-desc="JavaScript #7"><span class="card-label">#7</span></div>
-						<div class="card" data-desc="JavaScript #8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="This program is a terminal-based restaurant ordering system where users can add, view, and modify menu items. It calculates the total with tax, fees, and tips before placing the order."><img src="javascript/javascript1.png" alt="JavaScript Project 1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="This JavaScript program manages a list of usernames: it lets the user search for, insert, remove, and add usernames, choose how to sort the list, and optionally copy either the full list or a selected portion of it. It uses prompts to interact with the user and prints updates after each operation."><img src="javascript/javascript2.png" alt="JavaScript Project 2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="This program demonstrates three types of functions: one that runs tasks internally, one that returns a result, and one that calls another function. It adds numbers, compares a result, and prints messages."><img src="javascript/javascript3.png" alt="JavaScript Project 3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="This program collects student names and grades, calculates individual and class averages, and ranks students by performance. It demonstrates arrays, objects, loops, and sorting."><img src="javascript/javascript4.png" alt="JavaScript Project 4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="This interactive shopping cart allows users to add items, view them, and calculate the total with discounts and tax. It demonstrates arrays, objects, loops, and user input."><img src="javascript/javascript5.png" alt="JavaScript Project 5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="This program simulates a basic banking system with account creation, deposits, withdrawals, and balance viewing. It uses objects, loops, conditionals, and user input."><img src="javascript/javascript6.png" alt="JavaScript Project 6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="This interactive todo list lets users add tasks, mark them complete, and display the list with status indicators. It demonstrates arrays, objects, loops, and user input handling."><img src="javascript/javascript7.png" alt="JavaScript Project 7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="This dice game lets a player compete against the computer over multiple rounds, keeping score and declaring a winner. It demonstrates functions, loops, random numbers, and user input."><img src="javascript/javascript8.png" alt="JavaScript Project 8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="Interactive DOM widget demo"><img src="javascript/javascript9.png" alt="JavaScript Project 9"><span class="card-label">#9</span></div>
+						<div class="card" data-desc="Utility scripts and small apps"><img src="javascript/javascript10.png" alt="JavaScript Project 10"><span class="card-label">#10</span></div>
 					</div>
 				</section>
 				<section id="portfolio-3" class="section" aria-hidden="true" tabindex="-1">
 					<div class="about-card">
-						<h2>Minecraft MakeCode</h2>
-						<p>My MakeCode projects. Click any image to view details.</p>
+						<h2>HTML</h2>
+						<p>My HTML projects. Click any image to view details.</p>
 					</div>
 					<div class="card-grid" aria-live="polite">
-						<div class="card" data-desc="MakeCode #1"><span class="card-label">#1</span></div>
-						<div class="card" data-desc="MakeCode #2"><span class="card-label">#2</span></div>
-						<div class="card" data-desc="MakeCode #3"><span class="card-label">#3</span></div>
-						<div class="card" data-desc="MakeCode #4"><span class="card-label">#4</span></div>
-						<div class="card" data-desc="MakeCode #5"><span class="card-label">#5</span></div>
-						<div class="card" data-desc="MakeCode #6"><span class="card-label">#6</span></div>
-						<div class="card" data-desc="MakeCode #7"><span class="card-label">#7</span></div>
-						<div class="card" data-desc="MakeCode #8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="This is the portfolio you are currently looking at!"><img src="html/html1.png" alt="HTML #1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="An interactive counter with increment and decrement buttons using JavaScript to update the display dynamically"><img src="html/html2.png" alt="HTML #2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="A basic todo list where tasks can be added and clicked to mark complete. Demonstrates DOM manipulation and events."><img src="html/html3.png" alt="HTML #3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="Changes the webpage background color based on a dropdown selection. Shows interaction between HTML, CSS, and JavaScript."><img src="html/html4.png" alt="HTML #4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="A basic calculator that can add, subtract, multiply, or divide two numbers. Demonstrates forms, DOM manipulation, and conditionals in JS"><img src="html/html5.png" alt="HTML #5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="Displays a random quote each time the button is clicked. Demonstrates arrays, random numbers, and DOM manipulation."><img src="html/html6.png" alt="HTML #6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="An interactive FAQ accordion where clicking a question toggles its answer. Demonstrates JS DOM manipulation and CSS styling"><img src="html/html7.png" alt="HTML #7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="Converts Celsius to Fahrenheit using JavaScript and displays the result dynamically. Shows user input, math, and DOM manipulation"><img src="html/html8.png" alt="HTML #8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="Form validation and enhancement examples"><img src="html/html9.png" alt="HTML #9"><span class="card-label">#9</span></div>
+						<div class="card" data-desc="Responsive component examples and snippets"><img src="html/html10.png" alt="HTML #10"><span class="card-label">#10</span></div>
 					</div>
 				</section>
 				<section id="portfolio-4" class="section" aria-hidden="true" tabindex="-1">
 					<div class="about-card">
 						<h2>Photoshop</h2>
-						<p>Photoshop work and mockups.</p>
+						<p>My Photoshop Projects. Click any image to view details.</p>
 					</div>
 					<div class="card-grid" aria-live="polite">
-						<div class="card" data-desc="Photoshop #1"><span class="card-label">#1</span></div>
-						<div class="card" data-desc="Photoshop #2"><span class="card-label">#2</span></div>
-						<div class="card" data-desc="Photoshop #3"><span class="card-label">#3</span></div>
-						<div class="card" data-desc="Photoshop #4"><span class="card-label">#4</span></div>
-						<div class="card" data-desc="Photoshop #5"><span class="card-label">#5</span></div>
-						<div class="card" data-desc="Photoshop #6"><span class="card-label">#6</span></div>
-						<div class="card" data-desc="Photoshop #7"><span class="card-label">#7</span></div>
-						<div class="card" data-desc="Photoshop #8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="A poster created on the theme of NFL with 5 images, and effects like shadow and sharpen."><img src="photoshop/photoshop1.png" alt="Photoshop Project 1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="A poster created on the theme of the rapid expansion of smart/self driving."><img src="photoshop/photoshop2.png" alt="Photoshop Project 2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="A poster created on the theme of different phone brands such as Huawei, iPhone, Samsung, and Google. An effect used was clone stamp."><img src="photoshop/photoshop3.png" alt="Photoshop Project 3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="A poster created on the theme of fashion. Some notable brands used are Vogue and Chanel. An effect used is shadowing."><img src="photoshop/photoshop4.png" alt="Photoshop Project 4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="A poster displaying the different applications owned by Google which includes Chrome, YouTube, and Google Maps. An effect used is sharpening."><img src="photoshop/photoshop5.png" alt="Photoshop Project 5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="A poster created displaying different types of leaves. An effect used is shadowing."><img src="photoshop/photoshop6.png" alt="Photoshop Project 6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="A poster created depicting outer-space, more specifically zero gravity. Some effects used are shadowing, layering, and gradients."><img src="photoshop/photoshop7.png" alt="Photoshop Project 7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="A poster created on the theme of Twitter. It shows the transformation into X and has some shadowing."><img src="photoshop/photoshop8.png" alt="Photoshop Project 8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="Photo editing: color correction and masking"><img src="photoshop/photoshop9.png" alt="Photoshop Project 9"><span class="card-label">#9</span></div>
+						<div class="card" data-desc="Compositing and layer effects showcase"><img src="photoshop/photoshop10.png" alt="Photoshop Project 10"><span class="card-label">#10</span></div>
 					</div>
 				</section>
 				<section id="portfolio-5" class="section" aria-hidden="true" tabindex="-1">
 					<div class="about-card">
-						<h2>Portfolio 5</h2>
+						<h2>Mathematical Equations</h2>
 						<p>Additional portfolio items.</p>
 					</div>
 					<div class="card-grid" aria-live="polite">
-						<div class="card" data-desc="Testttttt"><span class="card-label">#1</span></div>
-						<div class="card" data-desc="Portfolio 5 #2"><span class="card-label">#2</span></div>
-						<div class="card" data-desc="Portfolio 5 #3"><span class="card-label">#3</span></div>
-						<div class="card" data-desc="Portfolio 5 #4"><span class="card-label">#4</span></div>
-						<div class="card" data-desc="Portfolio 5 #5"><span class="card-label">#5</span></div>
-						<div class="card" data-desc="Portfolio 5 #6"><span class="card-label">#6</span></div>
-						<div class="card" data-desc="Portfolio 5 #7"><span class="card-label">#7</span></div>
-						<div class="card" data-desc="Portfolio 5 #8"><span class="card-label">#8</span></div>
+						<div class="card" data-desc="A simple linear graph showing slope 1 and y-intercept 0. This concept was used in Algebra 1 to understand how changing the slope or intercept affects a line."><img src="math/math1.png" alt="Math 1"><span class="card-label">#1</span></div>
+						<div class="card" data-desc="A basic parabola demonstrating the shape of a quadratic function. This was explored in Algebra 1 to learn about vertices, intercepts, and the effect of coefficients on the curve."><img src="math/math2.png" alt="Math 2"><span class="card-label">#2</span></div>
+						<div class="card" data-desc="A circle centered at (1,1) with radius 2. This was used in Geometry to study properties of circles, including center, radius, and standard form equations."><img src="math/math3.png" alt="Math 3"><span class="card-label">#3</span></div>
+						<div class="card" data-desc="A standard sine wave showing amplitude and period. This was used in Algebra 2 / Trigonometry to understand periodic functions, wave behavior, and transformations."><img src="math/math4.png" alt="Math 4"><span class="card-label">#4</span></div>
+						<div class="card" data-desc="Shaded intersection of two linear inequalities representing a solution region. This concept was learned in Algebra 1 to solve systems of inequalities graphically."><img src="math/math5.png" alt="Math 5"><span class="card-label">#5</span></div>
+						<div class="card" data-desc="A basic exponential function showing rapid growth. This was used in Algebra 2 to study exponential patterns and understand how the base affects the curve."><img src="math/math6.png" alt="Math 6"><span class="card-label">#6</span></div>
+						<div class="card" data-desc="An ellipse with a horizontal major axis, demonstrating conic sections in Geometry."><img src="math/math7.png" alt="Math 7"><span class="card-label">#7</span></div>
+						<div class="card" data-desc="Shows a V-shaped graph demonstrating how absolute value affects negative and positive numbers. This was explored in Algebra 1."><img src="math/math8.png" alt="Math 8"><span class="card-label">#8</span></div>
 					</div>
 				</section>
 
-			<section id="about" class="section" aria-hidden="true" tabindex="-1">
+		<section id="portfolio-6" class="section" aria-hidden="true" tabindex="-1">
+			<div class="about-card">
+				<h2>Project Management 1</h2>
+				<p>Project management artifacts and deliverables (schedules, screenshots, reports).</p>
+			</div>
+			<div class="card-grid" aria-live="polite">
+				<div class="card" data-desc="Project plan and schedule snapshot"><img src="pm/pm1.png" alt="PM 1"><span class="card-label">#1</span></div>
+				<div class="card" data-desc="Gantt chart and milestone summary"><img src="pm/pm2.png" alt="PM 2"><span class="card-label">#2</span></div>
+				<div class="card" data-desc="Risk register and mitigation steps"><img src="pm/pm3.png" alt="PM 3"><span class="card-label">#3</span></div>
+			</div>
+		</section>
+		<section id="portfolio-7" class="section" aria-hidden="true" tabindex="-1">
+			<div class="about-card">
+				<h2>Project Management 2</h2>
+				<p>Additional project-management examples, sprint boards and retrospectives.</p>
+			</div>
+			<div class="card-grid" aria-live="polite">
+				<div class="card" data-desc="Sprint board snapshot"><img src="pm/pm4.png" alt="PM 4"><span class="card-label">#1</span></div>
+				<div class="card" data-desc="Retrospective notes and improvements"><img src="pm/pm5.png" alt="PM 5"><span class="card-label">#2</span></div>
+			</div>
+		</section>
+		<section id="portfolio-8" class="section" aria-hidden="true" tabindex="-1">
+			<div class="about-card">
+				<h2>Project Management 3</h2>
+				<p>Final project management artifacts for capstone or portfolio submissions.</p>
+			</div>
+			<div class="card-grid" aria-live="polite">
+				<div class="card" data-desc="Stakeholder map and communication plan"><img src="pm/pm6.png" alt="PM 6"><span class="card-label">#1</span></div>
+				<div class="card" data-desc="Project closeout checklist"><img src="pm/pm7.png" alt="PM 7"><span class="card-label">#2</span></div>
+				<div class="card" data-desc="PM3 artifact 1"><img src="pm3/PM3-1.png" alt="PM3-1"><span class="card-label">#3</span></div>
+				<div class="card" data-desc="PM3 artifact 2"><img src="pm3/PM3-2.png" alt="PM3-2"><span class="card-label">#4</span></div>
+				<div class="card" data-desc="PM3 artifact 3"><img src="pm3/PM3-3.png" alt="PM3-3"><span class="card-label">#5</span></div>
+			</div>
+		</section>
+		<section id="portfolio-9" class="section" aria-hidden="true" tabindex="-1">
+			<div class="about-card">
+				<h2>Gmetrix</h2>
+				<p>Screenshots and final results from GMetrix practice tests.</p>
+			</div>
+			<div class="card-grid" aria-live="polite">
+				<div class="card" data-desc="GMetrix screenshot 1"><img src="gmetrix/gmetrix1.png" alt="GMetrix 1"><span class="card-label">#1</span></div>
+				<div class="card" data-desc="GMetrix screenshot 2"><img src="gmetrix/gmetrix2.png" alt="GMetrix 2"><span class="card-label">#2</span></div>
+				<div class="card" data-desc="GMetrix screenshot 3"><img src="gmetrix/gmetrix3.png" alt="GMetrix 3"><span class="card-label">#3</span></div>
+				<div class="card" data-desc="GMetrix screenshot 4"><img src="gmetrix/gmetrix4.png" alt="GMetrix 4"><span class="card-label">#4</span></div>
+				<div class="card" data-desc="GMetrix screenshot 5"><img src="gmetrix/gmetrix5.png" alt="GMetrix 5"><span class="card-label">#5</span></div>
+				<div class="card" data-desc="GMetrix screenshot 6"><img src="gmetrix/gmetrix6.png" alt="GMetrix 6"><span class="card-label">#6</span></div>
+				<div class="card" data-desc="GMetrix screenshot 7"><img src="gmetrix/gmetrix7.png" alt="GMetrix 7"><span class="card-label">#7</span></div>
+				<div class="card" data-desc="GMetrix screenshot 8"><img src="gmetrix/gmetrix8.png" alt="GMetrix 8"><span class="card-label">#8</span></div>
+			</div>
+		</section>
+
+		<section id="about" class="section" aria-hidden="true" tabindex="-1">
 				<div class="about-card">
 					<h2>About Me</h2>
 					<p>My name is Mohammed Khalil, and I am a Junior in the Computer Science program at Passaic County Technical Institute. I have always been interested in technology and how it can be used to solve real-world problems, which is why I enjoy learning about coding, programming, and problem-solving. I also like working on projects that challenge me to think critically and creatively. Outside of school, I work and spend time with friends. My goal is to keep building my skills in computer science so that I can prepare for college and future opportunities in the tech field.</p>
@@ -221,15 +291,20 @@
 
 			<section id="contact" class="section" aria-hidden="true" tabindex="-1">
 				<div class="contact-card">
-					<form id="contactForm" action="#" onsubmit="alert('Demo form — replace with backend'); return false;">
-						<label for="name">Name</label>
-						<input id="name" name="name" required>
-						<label for="email">Email</label>
-						<input id="email" name="email" type="email" required>
-						<label for="message">Message</label>
-						<textarea id="message" name="message" rows="6" required></textarea>
-						<button type="submit">Send</button>
-					</form>
+						<!-- Visible contact info -->
+						<div class="contact-info" style="margin-bottom:16px">
+							<p><strong>Email:</strong> <a href="mailto:271486@pcti.mobi">271486@pcti.mobi</a></p>
+							<p><strong>Phone:</strong> <a href="tel:+19737906000">973-790-6000</a></p>
+						</div>
+						<form id="contactForm" action="#" onsubmit="alert('Demo form — replace with backend'); return false;">
+							<label for="name">Name</label>
+							<input id="name" name="name" required>
+							<label for="email">Email</label>
+							<input id="email" name="email" type="email" required>
+							<label for="message">Message</label>
+							<textarea id="message" name="message" rows="6" required></textarea>
+							<button type="submit">Send</button>
+						</form>
 				</div>
 			</section>
 		</main>
@@ -307,6 +382,59 @@
 					// append description inside the card so absolute positioning works relative to the card
 					card.appendChild(desc);
 					tile.appendChild(card);
+
+					// add top-right controls (download)
+					const imgEl = card.querySelector('img');
+					const controls = document.createElement('div');
+					controls.className = 'card-controls';
+					controls.style.position = 'absolute';
+					controls.style.right = '10px';
+					controls.style.top = '10px';
+					controls.style.zIndex = '3';
+					if (imgEl) {
+						const src = imgEl.getAttribute('src');
+						const possibleZip = src.replace(/\.[^/.]+$/, '.zip');
+						const dl = document.createElement('a');
+						dl.textContent = 'Download';
+						dl.setAttribute('download', '');
+						dl.style.background = '#0b63d6';
+						dl.style.color = '#fff';
+						dl.style.padding = '6px 8px';
+						dl.style.borderRadius = '6px';
+						dl.style.textDecoration = 'none';
+						dl.style.fontSize = '14px';
+						// prevent download click from toggling the card
+						dl.addEventListener('click', (e) => { e.stopPropagation(); });
+						controls.appendChild(dl);
+
+						// clicking image opens lightbox (stop propagation so card click doesn't toggle description)
+						imgEl.style.cursor = 'zoom-in';
+						imgEl.addEventListener('click', (ev) => {
+							ev.stopPropagation();
+							openLightbox(imgEl.getAttribute('src'), desc.textContent, dl.href || src);
+						});
+
+						// Prefer a .zip file with the same name; if not available, fall back to the image itself.
+						// Use a HEAD request to check existence, otherwise fallback.
+						(function resolveDownloadHref() {
+							// default to image so link is usable immediately
+							dl.href = src;
+							dl.setAttribute('download', src.split('/').pop());
+							// attempt to see if a zip exists at the same path
+							try {
+								fetch(possibleZip, { method: 'HEAD' }).then(res => {
+									if (res.ok) {
+										dl.href = possibleZip;
+										dl.setAttribute('download', possibleZip.split('/').pop());
+									}
+								}).catch(() => {
+									// leave dl.href as image
+								});
+							} catch (e) { /* ignore - static pages may block fetch */ }
+						})();
+					}
+					card.appendChild(controls);
+
 					// click to toggle description overlay (no layout change) — ensure single-open behavior
 					card.style.cursor = 'pointer';
 					card.setAttribute('role','button');
@@ -322,7 +450,7 @@
 							card.setAttribute('aria-expanded','false');
 						}
 					});
-					// keyboard support
+					// keyboard support (Enter/Space to toggle, 'v' to view image)
 					card.setAttribute('tabindex','0');
 					card.addEventListener('keydown', (e)=>{
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -334,6 +462,14 @@
 								card.setAttribute('aria-expanded','true');
 							} else {
 								card.setAttribute('aria-expanded','false');
+							}
+						} else if (e.key.toLowerCase() === 'v') {
+							// open the image in the lightbox when user presses 'v'
+							const img = card.querySelector('img');
+							if (img) {
+								const href = img.getAttribute('src');
+								const downloadHref = href.replace(/\.[^/.]+$/, '.zip');
+								openLightbox(href, desc.textContent, downloadHref);
 							}
 						}
 					});
@@ -420,7 +556,118 @@
 		};
 		// initialize tiles and run initial hash handler
 		initTiles();
-		onHashChange();
+			onHashChange();
+
+			// Lightbox helpers: open/close modal with image and download link
+			function openLightbox(src, descText, downloadHref) {
+				const backdrop = document.getElementById('lightboxBackdrop');
+				const img = document.getElementById('lightboxImg');
+				const meta = document.getElementById('lightboxDesc');
+				const dl = document.getElementById('lightboxDownload');
+				if (!backdrop || !img) return;
+				img.src = src;
+				meta.textContent = descText || '';
+				if (dl) { dl.href = downloadHref || src.replace(/\.[^/.]+$/, '.zip'); }
+				backdrop.classList.add('active');
+				document.body.style.overflow = 'hidden';
+			}
+
+			function closeLightbox() {
+				const backdrop = document.getElementById('lightboxBackdrop');
+				if (!backdrop) return;
+				backdrop.classList.remove('active');
+				document.body.style.overflow = '';
+			}
+
+			// close on ESC or backdrop click
+			document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeLightbox(); });
+
+		/* -- Search: filter visible cards by query (debounced) -- */
+		(function initSearch(){
+			const searchInput = document.querySelector('.nav-search input');
+			if (!searchInput) return;
+			const main = document.querySelector('.main-content');
+			const noResults = document.createElement('div');
+			noResults.className = 'no-results';
+			noResults.textContent = 'No results found';
+			noResults.style.display = 'none';
+			noResults.style.padding = '18px';
+			noResults.style.textAlign = 'center';
+			noResults.style.color = '#666';
+			noResults.style.fontSize = '1.05rem';
+			main.insertBefore(noResults, main.firstChild);
+
+			function clearSearchUI(){
+				Array.from(document.querySelectorAll('.tile.hidden')).forEach(t => t.classList.remove('hidden'));
+				noResults.style.display = 'none';
+				// restore section based on current hash
+				onHashChange();
+			}
+
+			function performSearch(q){
+				q = (q||'').trim().toLowerCase();
+				if (!q) { clearSearchUI(); return; }
+				const cards = Array.from(document.querySelectorAll('.card'));
+				const matches = [];
+				cards.forEach(card => {
+					const sectionTitle = card.closest('.section')?.querySelector('h2')?.textContent || '';
+					const text = [
+						card.getAttribute('data-desc') || '',
+						card.querySelector('img')?.alt || '',
+						card.querySelector('.card-label')?.textContent || '',
+						sectionTitle
+					].join(' ').toLowerCase();
+					const isMatch = text.includes(q);
+					const tile = card.closest('.tile');
+					if (tile) tile.classList.toggle('hidden', !isMatch);
+					if (isMatch) matches.push(card);
+				});
+
+				if (matches.length === 0) {
+					noResults.style.display = 'block';
+					// show home while nothing matches
+					showSection('home');
+				} else {
+					noResults.style.display = 'none';
+					// show the section that contains the first match
+					const firstSection = matches[0].closest('.section');
+					if (firstSection) {
+						showSection(firstSection.id);
+						openPortfolioIfNeeded(firstSection.id);
+						// close sidebar for focus on content if not home
+						closeSidebarOnNavigate(firstSection.id);
+					}
+				}
+			}
+
+			function debounce(fn, wait=200){
+				let t;
+				return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
+			}
+
+			const debounced = debounce(e => performSearch(e.target.value), 200);
+			searchInput.addEventListener('input', debounced);
+			searchInput.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') { searchInput.value = ''; clearSearchUI(); searchInput.blur(); }
+			});
+		})();
+	</script>
+
+	<!-- Lightbox markup -->
+	<div id="lightboxBackdrop" class="lightbox-backdrop" role="dialog" aria-hidden="true" aria-label="Image preview">
+		<div class="lightbox" role="document">
+			<img id="lightboxImg" src="" alt="Preview">
+			<div class="meta">
+				<div id="lightboxDesc"></div>
+				<a id="lightboxDownload" href="#" download>Download Source</a>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// backdrop click to close
+		const lb = document.getElementById('lightboxBackdrop');
+		if (lb) lb.addEventListener('click', (e)=>{ if (e.target === lb) closeLightbox(); });
 	</script>
 </body>
 </html>

@@ -6,4 +6,4 @@ age = int(input("Please enter your age: "))
 sentence = f"Your name is {name} and you are {age} years old."
 
 # Print the sentence
-print(sentence)
+print(sentence) 

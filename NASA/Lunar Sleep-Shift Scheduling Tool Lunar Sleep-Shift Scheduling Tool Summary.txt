@@ -1,0 +1,70 @@
+Lunar Sleep-Shift Scheduling Tool
+NASA HUNCH
+Quad-Chart  1 / 3
+Requested By  &  NASA Reference
+Requested by: NASA Johnson Space Center — Space Medicine / Fatigue Management
+Sponsors: Fatigue Management
+Program: NASA HUNCH
+NASA Reference Name: Sleep Shift Recommendation System (SSRS)
+Problem Statement
+Astronaut sleep-shift plans are built on the ground by fatigue specialists and can take ~a day to turn around.
+Moon & Mars missions add comm delays and frequent operations (e.g., multiple EVAs per week), so crews must re-plan sleep without the ground.
+Need an onboard tool that recommends sleep, nap, caffeine, and sleep-aid timing autonomously.
+Objective  &  Deliverables
+Objective: generate personalized, evidence-based sleep/wake schedules & fatigue-mitigation advice that run offline and iterate on feedback.
+Deliverables: end-user requirements w/ access protocols; HW/SW technical specs; high-level mission requirements & challenges; requirements doc; student presentation; project video; posting on nasahunch.com.
+Multiple Astonaughts or Mission Specialists
+Requirements
+Daily sleep onset / wake recommendations per crewmember
+Nap, caffeine, and sleep-aid (e.g., melatonin, Ambien) timing
+Gradual shifting rules (≤ 2 hr per sleep period; ~24 hr to adjust per 1 hr shift)
+Fatigue score (e.g., 0–100) rating how fatiguing a schedule is
+Light / exercise guidance; runs offline on a laptop or tablet
+Feedback loop that learns from adherence & alertness
+1
+
+Lunar Sleep-Shift Scheduling Tool
+NASA HUNCH
+Quad-Chart  2 / 3
+Major Constraints
+Must run offline — no cloud access required onboard
+Earth communication delay (~2.6 s to the Moon; minutes to Mars)
+Operations always take priority over optimal sleep
+Runs on a laptop (SSC) or tablet; lunar ~14-day light / dark cycle
+Student Adjustments
+Scope set to a Minimum Viable Product: a clear recommended schedule (sleep, wake, naps, caffeine, sleep aids) ± light/exercise tips.
+AI is not required — a rules-based scheduling tool is acceptable.
+Facial recognition / vigilance testing is optional (above-and-beyond only).
+Ops Planner (Optimus) timeline integration deferred to a later phase.
+Delivery target: ~May timeframe; no specific mission deadline.
+Challenges
+Encoding sleep-science rules (sleep debt, circadian shift limits)
+Individual sleep need varies (~5–10 hr) and crews often shift together as a team
+Producing a meaningful, trustworthy fatigue score
+Building a feedback / learning loop from crew input
+Reliable offline operation with conservative safe defaults on data loss
+Concept Sketch — How It Works
+2
+
+Lunar Sleep-Shift Scheduling Tool
+NASA HUNCH
+Quad-Chart  3 / 3
+Example of Excellence
+A working MVP that outputs a clear daily plan: sleep / wake, naps, caffeine, and sleep aids.
+Honors operational priorities and lets users iterate or override recommendations.
+Reports a fatigue score (e.g., 0–100) so a flight director can judge whether a schedule is acceptable.
+Runs fully offline on a laptop or tablet.
+Emits copy-paste scheduling constraints for Ops Planner (e.g., “asleep by 20:00, wind-down by 18:00, no exercise after 17:00”).
+Examples of Innovation
+Feedback / learning loop that adapts to each crewmember’s adherence and alertness.
+Wearable biometric input (e.g., Fitbit) for circadian phase & sleep quality.
+Vigilance testing or facial-recognition fatigue detection.
+An AI model trained on fatigue-specialist knowledge.
+Live ground ↔ crew data sync; future auto-integration with the Optimus timeline.
+Other Points  &  Comments
+Two distinct roles: biomedical lead (Westover) + software lead (HUNCH / Hayes).
+Rollout is crawl-walk-run: specialists use it first, then crew in-mission for autonomy.
+Fatigue team to provide a prioritized (Pareto) list of sleep-shift guidance & student resources.
+Two user types served: the fatigue-management team and the crew.
+Security / facial recognition is optional, not required for the MVP.
+3

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07111f">
+    <title>Lunar Sleep-Shift Scheduling Tool</title>
+    <link rel="stylesheet" href="nasa.css">
+    <script src="nasa.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Sleep Shift Recommendation System home">
+          <span class="brand-mark" aria-hidden="true">SS</span>
+          <span>
+            <strong>SSRS</strong>
+            <small>Sleep Shift Recommendation System</small>
+          </span>
+        </a>
+        <span class="offline-label"><span class="status-dot"></span> Offline-ready</span>
+      </header>
+
+      <section id="auth-screen" class="auth-layout" aria-labelledby="auth-title">
+        <div class="intro-panel">
+          <p class="eyebrow">NASA HUNCH · SFT 2026–27</p>
+          <h1 id="auth-title">Plan for better rest, wherever the mission takes you.</h1>
+          <p class="intro-copy">A local planning prototype for gradual sleep shifts, operational constraints, and crew feedback.</p>
+          <div class="brief-note">
+            <span class="note-icon" aria-hidden="true">i</span>
+            <p>Recommendations are planning aids, not medical advice. Operations and flight-surgeon guidance always take priority.</p>
+          </div>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-tabs" role="tablist" aria-label="Account options">
+            <button id="login-tab" class="auth-tab active" type="button" role="tab" aria-selected="true" aria-controls="auth-form" data-mode="login">Sign in</button>
+            <button id="create-tab" class="auth-tab" type="button" role="tab" aria-selected="false" aria-controls="auth-form" data-mode="create">Create account</button>
+          </div>
+          <form id="auth-form" class="form-stack" novalidate>
+            <h2 id="auth-heading">Crew sign in</h2>
+            <p id="auth-description" class="muted">Sign in to view this crew member’s local plan and feedback.</p>
+
+            <div id="name-field" class="field hidden">
+              <label for="crew-name">Crew member name</label>
+              <input id="crew-name" name="name" autocomplete="name" maxlength="60" placeholder="e.g. Crew Member 1">
+            </div>
+            <div id="role-field" class="field hidden">
+              <label for="crew-role">Role</label>
+              <select id="crew-role" name="role">
+                <option value="crew">Crew member</option>
+                <option value="fatigue-specialist">Fatigue specialist</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="crew-id">Crew ID</label>
+              <input id="crew-id" name="crewId" autocomplete="username" minlength="3" maxlength="24" required placeholder="e.g. crew-01">
+              <span class="field-hint">Use 3–24 letters, numbers, hyphens, or underscores.</span>
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters">
+            </div>
+            <div id="confirm-field" class="field hidden">
+              <label for="confirm-password">Confirm password</label>
+              <input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Enter the password again">
+            </div>
+            <p id="auth-message" class="form-message" role="status" aria-live="polite"></p>
+            <button id="auth-submit" class="button button-primary full-width" type="submit">Sign in</button>
+          </form>
+          <p class="security-note">Prototype only: accounts and plans stay in this browser. This is not mission-grade access control or encrypted storage.</p>
+        </div>
+      </section>
+
+      <section id="planner-screen" class="hidden" aria-labelledby="planner-title">
+        <header class="planner-header">
+          <div>
+            <p class="eyebrow">CREW PLANNING</p>
+            <h1 id="planner-title">Your sleep-shift plan</h1>
+            <p id="welcome-copy" class="muted"><span id="crew-color-indicator" class="crew-color-indicator" aria-hidden="true"></span><span id="crew-identity"></span></p>
+          </div>
+          <button id="logout-button" class="button button-outline" type="button">Sign out</button>
+        </header>
+
+        <div class="planner-grid">
+          <form id="plan-form" class="panel form-stack">
+            <div>
+              <p class="eyebrow">NEXT SLEEP PERIOD</p>
+              <h2>Build a daily plan</h2>
+              <p class="muted">Adjust the inputs to explore a schedule. Save the plan on this device.</p>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="current-bedtime">Current sleep onset</label>
+                <input id="current-bedtime" name="currentBedtime" type="time" value="22:00" required>
+              </div>
+              <div class="field">
+                <label for="target-bedtime">Target sleep onset</label>
+                <input id="target-bedtime" name="targetBedtime" type="time" value="22:00" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="shift-direction">Shift direction</label>
+                <select id="shift-direction" name="direction">
+                  <option value="earlier">Earlier (advance)</option>
+                  <option value="later">Later (delay)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sleep-duration">Planned sleep opportunity</label>
+                <div class="input-suffix">
+                  <input id="sleep-duration" name="sleepDuration" type="number" min="5" max="10" step="0.5" value="8" required>
+                  <span>hours</span>
+                </div>
+              </div>
+            </div>
+            <fieldset class="field-set">
+              <legend>Mission-day shift window</legend>
+              <p class="field-hint">Use the mission days to model a delayed operation, such as an EVA moved from Day 2 to Day 7.</p>
+              <div class="form-row">
+                <div class="field">
+                  <label for="current-mission-day">Plan starts on</label>
+                  <div class="input-suffix">
+                    <input id="current-mission-day" name="currentMissionDay" type="number" min="1" max="365" value="2" required>
+                    <span>day</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="operation-day">Operation mission day</label>
+                  <div class="input-suffix">
+                    <input id="operation-day" name="operationDay" type="number" min="1" max="365" value="7" required>
+                    <span>day</span>
+                  </div>
+                </div>
+              </div>
+              <p class="field-hint">Add one operation per line as: mission day, start, end, label. Example: 7,08:00,14:00,EVA 1</p>
+              <textarea id="operations" name="operations" rows="3" maxlength="1000" placeholder="7,08:00,14:00,EVA 1&#10;10,06:00,12:00; docking"></textarea>
+              <p class="field-hint">Operations take priority. The legacy start/end fields below remain available for one operation.</p>
+              <div class="form-row">
+                <div class="field">
+                  <label for="operation-start">Operation starts</label>
+                  <input id="operation-start" name="operationStart" type="time">
+                </div>
+                <div class="field">
+                  <label for="operation-end">Operation ends</label>
+                  <input id="operation-end" name="operationEnd" type="time">
+                </div>
+              </div>
+            </fieldset>
+            <fieldset class="field-set">
+              <legend>Lunar light and dark cycle</legend>
+              <p class="field-hint">Optional habitat context for the plan. Use the mission team's approved lighting schedule.</p>
+              <div class="form-row">
+                <div class="field">
+                  <label for="light-cycle-start">Light begins on Day</label>
+                  <input id="light-cycle-start" name="lightCycleStart" type="number" min="1" max="365" placeholder="1">
+                </div>
+                <div class="field">
+                  <label for="light-cycle-length">Light duration</label>
+                  <div class="input-suffix">
+                    <input id="light-cycle-length" name="lightCycleLength" type="number" min="1" max="28" value="14">
+                    <span>days</span>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <div class="field">
+              <label for="caffeine-instruction">Approved caffeine instruction <span class="optional">(optional)</span></label>
+              <input id="caffeine-instruction" name="caffeineInstruction" maxlength="160" placeholder="Enter only a flight-surgeon-approved instruction">
+            </div>
+            <div class="field">
+              <label for="sleep-aid-instruction">Approved sleep-aid instruction <span class="optional">(optional)</span></label>
+              <input id="sleep-aid-instruction" name="sleepAidInstruction" maxlength="160" placeholder="Enter only a flight-surgeon-approved instruction">
+            </div>
+            <p id="plan-message" class="form-message" role="status" aria-live="polite"></p>
+            <button class="button button-primary full-width" type="submit">Generate multi-day plan</button>
+          </form>
+
+          <section class="panel result-panel" aria-labelledby="result-title">
+            <div class="result-heading">
+              <div>
+                <p class="eyebrow">RECOMMENDATION</p>
+                <h2 id="result-title">Your plan will appear here</h2>
+              </div>
+              <div id="fatigue-score" class="score-badge hidden" aria-live="polite">
+                <strong id="score-value">—</strong>
+                <span>planning indicator<br>0–100</span>
+              </div>
+            </div>
+            <button id="copy-constraints" class="button button-outline copy-button hidden" type="button">Copy Ops constraints</button>
+            <div id="plan-output" class="plan-output empty-state">
+              <p>Enter the current and target sleep times, then generate a plan.</p>
+            </div>
+            <p class="score-disclaimer">The planning indicator is a simple, unvalidated heuristic—not a clinical fatigue measure or fitness-for-duty assessment.</p>
+            <div id="save-status" class="save-status" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section id="mission-calendar" class="panel calendar-panel hidden" aria-labelledby="calendar-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">MISSION CALENDAR</p>
+              <h2 id="calendar-title">Mission month calendar</h2>
+              <p class="muted">A 28-day lunar month view of the generated sleep glide path and scheduled operations.</p>
+            </div>
+            <div class="calendar-legend" aria-label="Calendar legend">
+              <span><i class="legend-sleep"></i>Sleep</span>
+              <span><i class="legend-operation"></i>Operation</span>
+            </div>
+          </div>
+          <div id="mission-calendar-grid" class="mission-calendar-grid" role="grid" aria-label="Mission sleep and operations calendar"></div>
+        </section>
+
+        <section class="panel feedback-panel" aria-labelledby="feedback-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">CLOSE THE LOOP</p>
+              <h2 id="feedback-title">How did it go?</h2>
+              <p class="muted">Record adherence and alertness to support review with your fatigue specialist.</p>
+            </div>
+          </div>
+          <form id="feedback-form" class="feedback-form">
+            <div class="field">
+              <label for="actual-sleep">Sleep achieved</label>
+              <div class="input-suffix">
+                <input id="actual-sleep" name="actualSleep" type="number" min="0" max="16" step="0.5" value="8" required>
+                <span>hours</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="alertness">Alertness</label>
+              <select id="alertness" name="alertness">
+                <option value="1">1 — Very low</option>
+                <option value="2">2 — Low</option>
+                <option value="3" selected>3 — Moderate</option>
+                <option value="4">4 — Good</option>
+                <option value="5">5 — Very good</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="actual-bedtime">Actual sleep onset <span class="optional">(optional)</span></label>
+              <input id="actual-bedtime" name="actualBedtime" type="time">
+            </div>
+            <div class="field">
+              <label for="nap-completed">Nap completed</label>
+              <select id="nap-completed" name="napCompleted">
+                <option value="unknown" selected>Not recorded</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <button class="button button-secondary" type="submit">Save feedback</button>
+          </form>
+          <p id="feedback-message" class="form-message" role="status" aria-live="polite"></p>
+          <div id="feedback-history" class="feedback-history"></div>
+        </section>
+
+        <details class="panel evidence-panel">
+          <summary>Evidence notes and prototype limits</summary>
+          <ul>
+            <li>The supplied research notes distinguish direct laboratory measurement from wearable-derived estimates. Common wearable signals such as movement, heart rate, HRV, skin temperature, and light exposure are context data; they do not directly measure melatonin or caffeine concentration.</li>
+            <li>A caffeine half-life calculation is only a population-level estimate and varies between people. This prototype does not calculate caffeine clearance or recommend a dose or timing.</li>
+            <li>Melatonin timing such as dim-light melatonin onset requires an appropriate clinical measurement; this prototype does not infer hormone levels or recommend sleep-aid use.</li>
+            <li>Sleep shifting is a normal planning challenge in rotating night-work settings such as nursing, emergency response, aviation, military operations, and remote or offshore work. <a href="https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod7/06.html" target="_blank" rel="noopener noreferrer">NIOSH notes prophylactic naps before night shifts</a> can support alertness, while <a href="https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod7/03.html" target="_blank" rel="noopener noreferrer">sleep inertia after waking</a> can temporarily affect performance. These settings are useful comparison cases, not interchangeable EVA protocols.</li>
+            <li>For this prototype, shift sleep onset by no more than 2 hours per 24 hours. Any melatonin or stimulant use must be the minimum flight-surgeon-approved plan needed to avoid sleep inertia or excessive stimulation; no dose or timing is generated here.</li>
+            <li>The planning indicator is an unvalidated demonstration heuristic. It must not be used for clinical decisions, operational fitness-for-duty, or crew task assignment.</li>
+            <li>All generated schedules are proposals. Mission operations and flight-surgeon or fatigue-specialist instructions take priority.</li>
+          </ul>
+        </details>
+
+        <footer class="site-footer">
+          <p>Local prototype · No network connection required · Data is stored in this browser only</p>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

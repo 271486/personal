@@ -1,0 +1,601 @@
+REQUIREMENTS OVERVIEW  ·  RESEARCH BRIEF
+Lunar Sleep-Shift
+Scheduling Tool
+Planning astronaut sleep around mission operations for the Moon and Mars — supporting flight surgeons, the fatigue-management team, and eventual crew autonomy.
+Prepared for:  NASA Flight Surgeons & Fatigue-Management / Sleep Specialists
+Roles:  Biomedical lead (Allie)  +  Software lead — student development team
+Draft for review — scope to be adjusted iteratively  ·  Target delivery: May
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+1
+
+AGENDA
+What this brief covers
+02
+The requirements
+Current state, the Moon/Mars challenge, and the minimum viable tool we heard described.
+How it should work
+Users, devices, data sync, workflow integration, scoring, feedback, and the phased roadmap.
+The research
+Why this matters, the science of sleep-shifting, and a current bibliography to seed the team.
+Our requests
+Open questions for you — and a short list of sanitized data we'd like to ground the design.
+This is the start of the discussion — please mark it up: add, tweak, or remove anything.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+2
+
+THE PROBLEM TODAY
+Sleep-shift planning is slow and ground-dependent
+03
+Sleep-shift plans are developed on the ground
+The fatigue-management team — sleep specialists — builds the schedules.
+Turnaround can take ~a day
+A flight surgeon flags an upcoming launch, landing, or EVA and requests a plan; a polished schedule may take about a day to come back.
+Surgeons often decide before specialists respond
+Operational timing forces the flight surgeon to build a sleep-shift plan alone, without specialist support in the loop.
+Today's loop
+Flight surgeon spots an upcoming operational event
+Requests a plan from fatigue / sleep specialists
+~1 day wait for a polished schedule
+Surgeon may have to act first — solo, under time pressure
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+3
+
+WHY IT MATTERS
+The Moon and Mars raise the stakes
+04
+Communication delay
+A ~2.6-second one-way delay to the Moon makes the ground 'game of telephone' awkward — and Mars is far worse.
+Frequent operations
+Not one EVA every few months — potentially multiple EVAs per week, each needing a re-jig of the sleep plan.
+Need for autonomy
+Crew must adjust their own schedules to be operationally ready without round-tripping to specialists on the ground.
+An unearthly day/night
+On the Moon, roughly two weeks of light and two weeks of dark remove the natural cues the body relies on.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+4
+
+GOAL & VISION
+One tool, two horizons
+05
+Give clinicians and crews a fast, offline way to turn operational constraints into a sound, defensible sleep-shift plan — then grow it toward in-mission crew autonomy.
+Near term — ground support
+Used by the fatigue team and crew surgeons to generate schedules quickly.
+Encode constraints, get a recommended plan, and apply small expert tweaks.
+Useful even in today's ISS-style paradigm.
+Longer term — crew autonomy
+Crew generate and adjust recommendations locally, in mission.
+Reduce dependence on ground turnaround and comm delay.
+Confidence earned step-by-step before in-flight reliance.
+Crawl → walk → run.  Specialists & surgeons use it first; their feedback drives features; confidence then enables crew use in mission to increase autonomy.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+5
+
+USERS
+Two primary user types
+06
+Fatigue team / sleep specialists
+Generate schedules from operational inputs.
+Review the output — 'looks about right' — and apply small tweaks.
+Primary near-term users while the tool earns trust.
+Author the guidance and priorities the tool encodes.
+Crew
+Generate or adjust recommendations locally for autonomy.
+Re-jig schedules around frequent EVAs without waiting on the ground.
+Provide post-plan feedback on what worked.
+Eventual in-mission users as confidence grows.
+Both need the same schedule pushed back and forth between Earth and Moon — see data sharing.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+6
+
+SCOPE
+Scope at a glance
+07
+Minimum viable product
+Optimized schedule from ops constraints
+Sleep & nap timing
+Caffeine timing
+Sleep-aid (e.g., melatonin) timing
+Light & exercise guidance
+Short-term & long-term shifts
+Works offline
+Nice to have
+Quantitative 'fatiguingness' / risk score
+Sleep-debt accumulation in outputs
+Individual sleep-need & nap-ability inputs
+Post-plan adherence & effectiveness feedback
+Learning from prior shifts per person
+Future iterations
+Direct integration with the Optimus timeline
+Interim 'scheduling constraints' export to Ops
+Optional AI model trained on specialist knowledge
+Optional fatigue sensing (e.g., vigilance tests)
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+7
+
+MVP CAPABILITY
+Generate an optimized, recommended schedule
+08
+The core job: take the operational picture and return the best recommended sleep-shift plan.
+Inputs: operational constraints
+Upcoming launch, landing, or EVA — potentially several EVAs per week.
+Output: a recommended plan
+A clear, defensible schedule the user can accept or refine.
+Built to be iterated
+Re-run as events change; support negotiation and back-and-forth.
+What a plan coordinates
+Sleep periods — bed & wake timing
+Naps — when and how long
+Caffeine timing
+Sleep-aid timing
+Light & exercise guidance
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+8
+
+MVP CAPABILITY
+Recommend sleep & nap timing
+09
+When to go to sleep, when to wake, and when to nap — the backbone of every plan.
+Bed & wake timing
+Anchor the main sleep period to the operational target.
+Strategic naps
+Place naps to protect alertness around demanding events.
+Respect physiology
+Keep shifts gradual and within sensible limits (see scheduling rules).
+Why timing matters
+Sleep timing — not just duration — drives alertness
+Mis-timed sleep leaves crew tired at the wrong hour
+Naps can offset a shortened main sleep
+Nap ability varies by person (capture later)
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+9
+
+MVP CAPABILITY
+Recommend caffeine timing
+10
+Caffeine is a precise tool — useful for a planned alertness window, harmful if it blocks sleep.
+Time it to the task
+Boost alertness ahead of an EVA or critical operation.
+Protect upcoming sleep
+Avoid dosing too close to a scheduled sleep period.
+Coordinate with the whole plan
+Caffeine, naps, light, and sleep aids are recommended together.
+Plan-level coordination
+Caffeine pulls alertness earlier; sleep aids push sleep
+Both are sequenced against the operational timeline
+Recommendations stay adjustable by the user
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+10
+
+MVP CAPABILITY
+Recommend sleep-aid timing
+11
+Crews have aids available — melatonin and other medications such as Ambien — and timing is everything.
+Melatonin
+Timed strategically to help shift the body clock, not just induce sleep.
+Other sleep medications
+e.g., Ambien — recommend timing relative to sleep and duty.
+Surface trade-offs
+Flag interactions with on-call readiness where relevant.
+Clinical caution
+Tool recommends timing — the clinician prescribes
+Readiness to respond to alarms is a real consideration
+Doses & agents remain a medical decision
+See research section for guideline context
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+11
+
+MVP CAPABILITY
+Behavioral & environmental guidance
+12
+Simple, non-pharmacologic levers that strongly influence the body clock and sleep quality.
+Light exposure
+Recommend reducing blue light or using blue-blocker glasses a set number of hours before bedtime; adjust habitat lighting.
+Exercise timing
+Avoid vigorous exercise close to bedtime so it doesn't delay sleep onset.
+Daytime light
+Use bright/blue-enriched light at the right time to help anchor the desired schedule.
+Wind-down
+Protect a pre-sleep wind-down window in the plan and in any constraints sent to Ops.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+12
+
+BEHAVIOR
+Short-term vs. long-term shifts
+13
+The same event can call for a quick one-off nudge or a sustained move to a new schedule — the tool should handle both.
+Short-term, one-off change
+A single upcoming event (e.g., one EVA or docking).
+Shift, accomplish the objective, and recover after.
+Minimal disruption to the baseline rhythm.
+Longer-term / permanent shift
+Moving to a new schedule for an extended period.
+Gradual adjustment that respects shift-rate limits.
+Plan the glide path, not just the endpoint.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+13
+
+PLATFORM
+Devices & offline operation
+14
+Laptop / SSC-type device
+Runs on standard crew laptop hardware.
+Tablet
+Lightweight option for in-the-loop use.
+No facial recognition required
+Not needed for the MVP; optional later.
+Must work without cloud access
+Offline capability is a firm requirement. All scheduling logic and guidance run locally on the device; any Earth–Moon syncing is layered on top, not depended upon.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+14
+
+LOGIC
+Scheduling rules to encode
+15
+Example guidance the specialists described — to be programmed and prioritized against operational needs.
+~24 h
+of adjustment time needed per 1 hour of shift
+≤ 2 h
+preferred maximum shift in a single sleep period
+Ops first
+operational need can override the science
+Weighted, not absolute
+Some guidelines carry more importance than others; the tool should let that priority be expressed.
+When operations demand it, the plan can exceed 'best science' limits — and should show the cost of doing so.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+15
+
+LOGIC
+Operations override & iteration
+16
+Operations trumps everything
+'I get that it's best to do this — but we have to do this tomorrow.' The tool must accept that and respond.
+Science offers the ideal
+The sleep team's 'scientifically best' plan is a starting point, not a mandate.
+Negotiation is the norm
+Crew, surgeons, and directors iterate; the tool should make back-and-forth fast and transparent.
+A negotiation loop
+Generate best-science plan
+Apply operational priorities
+Tweak & re-score
+Agree on an acceptable plan
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+Discussion
+Scoring Discussion
+Weighting of impacts
+Rules - Expert System
+Specialists enter new rules
+16
+
+DATA & WORKFLOW
+Live Earth–Moon data sync
+17
+Live data is preferred over PDFs
+Both sides see updates and stay coordinated, rather than emailing documents back and forth.
+The 2.6-second Moon delay is acceptable
+For scheduling, a one-way lunar comm delay is not a meaningful obstacle.
+Soft replication, two endpoints
+Real-time state on the Moon and on Earth, synced as they go — with PDF exchange as a low-fidelity fallback if needed.
+Earth
+Moon
+~2.6 s one-way delay — acceptable
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+17
+
+DATA & WORKFLOW
+Fitting into the Ops timeline (Future Optimus)
+18
+Today, the sleep block is agreed first; Ops then rebuilds the timeline around it. Our tool can plug in at two levels.
+Flight director + flight surgeon agree the sleep block
+›
+Ops Planner reworks the Optimus timeline around it
+›
+Crew schedule finalized
+Interim: export 'scheduling constraints' Rules
+Copy-paste constraints to Ops, e.g. 'asleep by 20:00, wind-down by 18:00; no exercise after 17:00.'
+Lighting constraints can route to whoever manages habitat lighting.
+Future: integrate with the timeline
+Communicate directly with Optimus to automate the replanning step.
+Account for what Ops already has scheduled.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+18
+
+APPROACH
+AI or algorithm? No hard requirement
+19
+Algorithmic scheduling tool
+May fully satisfy the need on its own.
+Encodes the specialists' rules and priorities directly.
+Transparent, predictable, easy to validate.
+Strong fit for an offline, defensible MVP.
+AI-based approach (optional)
+Would require capturing specialist knowledge into a trainable model.
+Could personalize recommendations over time.
+Heavier to build, validate, and certify.
+A later step — not required for the base model.
+Team's call on the method. The requirement is a tool that works offline and produces sound, adjustable plans — 
+AI is a means, not a mandate.(Consider Rules Based Expert System )
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+19
+
+REPORTING (NICE-TO-HAVE)
+Fatigue risk score & sleep debt
+20
+A quantitative 'fatiguingness' score
+Helps the surgeon advise the flight director on acceptability and risk.
+Built for hard constraints
+If a plan is forced ('wake in 3 hours, no matter what'), the score honestly reflects it.
+Track sleep debt
+Fatigue accumulates; one long night doesn't fully restore function. Reflect this in outputs and scoring.
+Acceptability, at a glance
+100
+well-rested & fully operational
+75
+acceptable — best available given constraints
+Example scores. The mission may still be accomplished at 75 — crew may be tired and need recovery afterward — and the surgeon can say so with a number behind it.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+20
+
+REPORTING (NICE-TO-HAVE)
+Individualization & the feedback loop
+21
+Individual needs
+Capture per-crew sleep need (some need ~6 h, some ~10) and nap ability — though crews often must shift together as a team.
+Adherence
+Did they follow the plan — meds, naps, bedtime? e.g., planned 20:00 but fell asleep at 23:00.
+Effectiveness
+Post-sleep self-report of sleepiness, alertness, and vigilance.
+Learn over time
+Use feedback to improve future recommendations for that individual — e.g., 'this person doesn't nap well.'
+Feedback can be entered by the crew or pulled by the crew surgeon — whichever fits the mission.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+21
+
+PLAN
+Phased roadmap
+22
+1
+CRAWL
+Base model
+Offline schedule generator
+Sleep, naps, caffeine, sleep aids
+Light & exercise guidance
+Short- & long-term shifts
+2
+WALK
+Use & feedback
+Surgeons & fatigue team adopt it
+Risk score & sleep-debt view
+Individual inputs & feedback
+Refine from real use
+3
+RUN
+Autonomy & integration
+Crew use in mission
+Live Earth–Moon sync
+Optimus timeline integration
+Optional AI / sensing
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+22
+
+RESEARCH
+The science behind sleep-shifting
+Why spaceflight sleep is hard, what countermeasures work, and a current bibliography to seed the team's research stage — including space agencies (NASA, ESA), academic sleep-medicine centers, and circadian-medicine guidelines relevant to multi-time-zone travel.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+23
+
+RESEARCH
+Sleep deficiency in spaceflight is pervasive
+24
+~6 h
+average sleep per night in space — below the ~8 h scheduled (Barger et al., 2014)
+~⅓–½
+of nights under 6 hours of sleep on shuttle missions (Barger et al., 2014)
+Widespread
+hypnotic (sleep-medication) use on orbit (Barger et al., 2014)
+Docking, undocking, and EVAs force 'slam shifts'
+Abrupt sleep-timing changes resemble severe jet lag or rotating night-shift work — but with higher stakes (NASA Ames Fatigue Countermeasures Lab; Flynn-Evans).
+Deficits degrade performance and accumulate
+Six-month ISS data link sleep deficiency to degraded neurobehavioral function and elevated stress (Jones et al., 2022).
+Implication: better, faster countermeasure planning is genuinely needed — exactly the gap this tool targets.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+24
+
+RESEARCH
+Countermeasures the tool can encode
+25
+Light
+Light is the strongest clock-setter. Timed bright/blue-enriched light advances or delays the clock; blue reduction before bed protects sleep. ISS uses tunable lighting modes for this (Wu et al., 2018).
+Melatonin
+Low-dose, strategically timed melatonin shifts the clock and aids sleep; guidelines endorse timed melatonin for circadian disorders (AASM, 2015).
+Caffeine & alertness
+Timed caffeine supports a planned alertness window without blocking the next sleep period — sequenced against the operational timeline.
+Scheduling & naps
+Gradual phase shifts, protected sleep windows, and strategic naps reduce misalignment — the core of analog-mission fatigue programs.
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+25
+
+RESEARCH
+Lessons from space & ground analogs
+26
+Phoenix Mars Lander
+Mission staff entrained to a 24.65 h 'Mars day' for ~78 days using a structured light + scheduling fatigue program (Barger et al., 2012).
+Mars500 (520-day sim)
+Long isolation produced reduced activity and altered sleep timing/duration — a caution for deep-space confinement (Basner et al., 2013).
+Concordia, Antarctica (ESA)
+An ISS analog with months of darkness; blue-enriched light tested as a countermeasure to circadian delay (ESA; Najjar et al., 2014).
+ESA in-orbit studies
+Huginn-mission 'Circadian Light' and 'Sleep in Orbit' experiments study lighting and sleep monitoring on the ISS (ESA, 2023).
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+26
+
+REFERENCES
+Bibliography I — Spaceflight sleep & fatigue
+27
+Barger LK, Flynn-Evans EE, Kubey A, et al. (2014).  Prevalence of sleep deficiency and use of hypnotic drugs in astronauts before, during, and after spaceflight: an observational study. The Lancet Neurology, 13(9):904–912. (Harvard / Brigham & Women's Hospital; NASA)
+Jones CW, Basner M, Mollicone DJ, Mott CM, Dinges DF. (2022).  Sleep deficiency in spaceflight is associated with degraded neurobehavioral functions and elevated stress in astronauts on six-month ISS missions. Sleep. (University of Pennsylvania)
+Barger LK, Sullivan JP, Vincent AS, et al. (2012).  Learning to live on a Mars day: fatigue countermeasures during the Phoenix Mars Lander mission. Sleep, 35(10):1423–1435.
+Basner M, Dinges DF, Mollicone DJ, et al. (2013).  Mars 520-d mission simulation reveals protracted crew hypokinesis and alterations of sleep duration and timing. PNAS, 110(7):2635–2640.
+Wu B, Wang Y, Wu X, et al. (2018).  On-orbit sleep problems of astronauts and countermeasures. Military Medical Research, 5:17. (review of lighting, behavioral & pharmacologic countermeasures)
+Zong H, Fei Y, Liu N. (2025).  Circadian disruption and sleep disorders in astronauts: a review of multi-disciplinary interventions for long-duration space missions. Int. J. Molecular Sciences, 26(11):5179. (Soochow University)
+NASA Human Research Program — Behavioral Health & Performance (BHP) Element.  Fatigue-related countermeasures for long-duration exploration missions; NASA Ames Fatigue Countermeasures Laboratory (Flynn-Evans). NASA Technical Reports Server (NTRS).
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+27
+
+REFERENCES
+Bibliography II — Circadian medicine & analogs
+28
+Auger RR, Burgess HJ, Emens JS, et al. (2015).  Clinical practice guideline for the treatment of intrinsic circadian rhythm sleep-wake disorders (ASWPD, DSWPD, N24SWD, ISWRD): an update for 2015. J. Clinical Sleep Medicine, 11(10):1199–1236. American Academy of Sleep Medicine — endorses strategically timed melatonin and light therapy.
+Najjar RP, Wolf L, Taillard J, et al. (2014).  Chronic artificial blue-enriched white light is an effective countermeasure to delayed circadian phase and neurobehavioural decrements. (ESA Concordia, Antarctica analog)
+Light therapy for sleep disorders in shift workers — systematic review & meta-analysis. (2025).  Scientific Reports, 15. Timed light improves total sleep time and efficiency in shift workers — relevant to multi-time-zone / shift-type misalignment.
+How to live on Mars with a proper circadian clock? (2021).  Frontiers in Astronomy and Space Sciences, 8:796943. Review of circadian challenges and countermeasures for planetary missions.
+European Space Agency (2023).  Huginn mission — 'Circadian Light' and 'Sleep in Orbit' experiments (A. Mogensen); Concordia Antarctic isolation sleep research. esa.int.
+UpToDate: complementary clinical overviews include 'Jet lag', 'Sleep-wake disturbances in shift workers', and 'Overview of circadian sleep-wake rhythm disorders' (Wolters Kluwer UpToDate, current edition) — practical references the team can consult for treatment specifics.
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+28
+
+OUR REQUESTS
+Open requirements — your input wanted
+29
+This baseline is intentionally broad. Please help us prioritize and fill gaps with answers to the following.
+Prioritized guidance
+A Pareto-ranked list of the specialists' key inputs — the top 20%, the next 20% — separate from operational overrides.
+Rule weighting
+Which guidelines are 'firm' vs. 'flexible,' and how should priority be expressed when ops overrides science?
+Defining the score
+What should the 'fatiguingness' score weigh (sleep debt, shift size, timing), and what thresholds map to acceptable risk?
+Individual variability
+How should we capture per-crew sleep need and nap ability while still supporting team-wide shifts?
+Feedback fields
+Exactly which adherence and effectiveness items to collect — and who enters them (crew vs. surgeon)?
+Constraints format
+What fields should the 'scheduling constraints' export contain to be directly usable by Ops and lighting managers?
+Lunar Sleep-Shift Scheduling Tool  ·  Requirements & Research Brief
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+29
+
+OUR REQUESTS
+Sanitized data to ground the design
+30
+To produce an initial specification and understand the database requirements, a few sanitized examples would help enormously:
+1 · Sanitized sleep report
+The format / examples of sleep schedules.
+Individual sleep-adjustment schedules.
+2 · Sleep / wake profile
+A sanitized profile representing an individual astronaut or mission specialist.
+3 · Sample sanitized reports
+Examples of the reports you currently 'sanitize,' to clarify the data we'll work with.
+Next steps:  we'll circulate a short requirements presentation + document; you review and tweak scope; biomedical (Allie) and software leads then take it forward, phasing as needed. Thank you — this is a great baseline to start from.
+Michael Hayes
+NASA HUNCH
+214 315 5607
+hayesmic20@gmail.com
+30

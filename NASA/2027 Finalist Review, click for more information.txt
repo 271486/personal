@@ -1,0 +1,111 @@
+﻿2027 Finalist Review, click for more information.
+
+
+
+NASA HUNCH
+HomeProgramsRegionsProduct CatalogPartnersTeamRegistration / Forms
+
+
+Software and Technology Hardware Engineering plus RoboticsBiomedical Engineering and Health Science
+SFT 2026-27 - Lunar Sleep-Shift Scheduling Tool
+SFT 2026-27 - Lunar Sleep-Shift Scheduling Tool
+(Sleep Shift Recommendation System, SSRS)
+
+
+Executive Summary
+Build an onboard tool that generates personalized, evidence-based sleep/wake schedules and fatigue-mitigation advice for astronauts, running offline and improving through feedback. Objective: produce recommendations for sleep, wake, naps, caffeine, and sleep-aid timing autonomously. Deliverables: end-user requirements with access protocols; hardware/software technical specs; high-level mission requirements and challenges; a requirements document; a student presentation; a project video; and a posting on nasahunch.com.
+
+
+Requested By
+NASA Johnson Space Center - Space Medicine / Fatigue Management. Program: NASA HUNCH.
+
+
+Sponsors: HRP Flight Surgeon (JSC-SD311); N. Hall (GRC).
+
+
+Problem Statement
+Astronaut sleep-shift plans are built on the ground by fatigue specialists and can take about a day to turn around. Moon and Mars missions add communication delays and frequent operations (for example, multiple EVAs per week), so crews must re-plan sleep without the ground. An onboard tool is needed that recommends sleep, nap, caffeine, and sleep-aid timing autonomously.
+
+
+Requirements Overview
+Daily sleep-onset / wake recommendations per crewmember
+Nap, caffeine, and sleep-aid (e.g., melatonin) timing
+Gradual shifting rules (<= 2 hr per sleep period; ~24 hr to adjust per 1 hr shift)
+A fatigue score (e.g., 0-100) rating how fatiguing a schedule is
+Light / exercise guidance; runs offline on a laptop or tablet
+A feedback loop that learns from adherence and alertness
+
+
+Major Constraints
+Must run offline — no cloud access required onboard
+Earth communication delay (~2.6 s to the Moon; minutes to Mars)
+Operations always take priority over optimal sleep
+Runs on a laptop (SSC) or tablet; lunar ~14-day light/dark cycle
+
+
+Key Challenges
+Encoding sleep-science rules (sleep debt, circadian shift limits)
+Individual sleep need varies (~5-10 hr) and crews often shift together as a team
+Producing a meaningful, trustworthy fatigue score
+Building a feedback / learning loop from crew input
+Reliable offline operation with conservative safe defaults on data loss
+
+
+Cards
+1 — Other Points / Comments
+Two distinct roles: a biomedical lead (Westover) and a software lead (HUNCH / Hayes)
+Rollout is crawl-walk-run: specialists use it first, then crew in-mission for autonomy
+The fatigue team is to provide a prioritized (Pareto) list of sleep-shift guidance and student resources
+Two user types are served: the fatigue-management team and the crew
+Security / facial recognition is optional, not required for the MVP
+
+
+2 — Examples of Excellence
+A working MVP that outputs a clear daily plan: sleep/wake, naps, caffeine, and sleep aids
+Honors operational priorities and lets users iterate or override recommendations
+Reports a fatigue score (e.g., 0-100) so a flight director can judge whether a schedule is acceptable
+Runs fully offline on a laptop or tablet
+Emits copy-paste scheduling constraints for the Ops Planner (e.g., 'asleep by 20:00, wind-down by 18:00, no exercise after 17:00')
+
+
+3 — Examples of Innovation
+A feedback / learning loop that adapts to each crewmember's adherence and alertness
+Wearable biometric input (e.g., a fitness tracker) for circadian phase and sleep quality
+Vigilance testing or facial-recognition fatigue detection
+An AI model trained on fatigue-specialist knowledge
+Live ground-to-crew data sync, with future auto-integration into the Ops Planner timeline
+
+
+Suggestions for High School Students
+Scope to a Minimum Viable Product: a clear recommended schedule (sleep, wake, naps, caffeine, sleep aids) plus optional light/exercise tips
+AI is not required — a rules-based scheduling tool is acceptable
+Facial recognition / vigilance testing is optional (above-and-beyond only)
+Ops Planner timeline integration can be deferred to a later phase
+Delivery target is roughly a May timeframe; there is no specific mission deadline
+
+
+Please review more info: https://docs.google.com/presentation/d/1u5LjldyDHPapQp_XLfIFg8Ex9oTPL9W4vDAah7dt0x4/edit?slide=id.p1#slide=id.p1
+Research - https://docs.google.com/document/d/1jLmBum_ASQnow7Bv8GfCyazmf5-7gGctodLFgll4wFc/edit?usp=sharing
+
+
+Examples of Excellence - Samples of Innovation - Other Points / Comments - https://docs.google.com/presentation/d/1DX18QZEK2COP1ejJXya9LEEXzFsawODeB4FLN55Y8_0/edit?usp=sharing
+
+
+
+NASA HUNCH
+2101 E NASA Pkwy, Houston, TX 77058
+hunch.nasa@gmail.com
+Menu
+* Home
+* Programs
+* Product Catalog
+* Partners
+* Team
+* Forms
+Related Websites
+* NASA
+* Voyager Space
+________________
+
+
+2026 NASA HUNCH, All Rights Reserved
