@@ -249,6 +249,35 @@ h2 {
   margin-bottom: 4px;
 }
 
+.advanced-settings,
+.plan-more {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgb(10 22 36 / 55%);
+}
+
+.advanced-settings summary,
+.plan-more summary {
+  padding: 12px 14px;
+  color: #dbe5f0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.advanced-settings[open] summary,
+.plan-more[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.advanced-settings-content,
+.plan-more-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
 .muted {
   margin-bottom: 0;
   color: var(--muted);
@@ -406,6 +435,38 @@ button:focus-visible {
 
 .panel {
   padding: 24px;
+}
+
+.quick-tools-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.quick-tools-panel h2 {
+  margin-bottom: 8px;
+}
+
+.quick-tool-form,
+.quick-tool-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.quick-tool-result {
+  min-height: 16px;
+  margin: 0;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.quick-tool-result.success {
+  color: var(--accent);
 }
 
 .planner-grid .panel {
@@ -645,6 +706,30 @@ button:focus-visible {
   padding: 15px 0 8px;
 }
 
+.primary-plan {
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgb(10 22 36 / 55%);
+}
+
+.primary-plan .plan-item:nth-child(2) .plan-time {
+  color: var(--text);
+  font-size: 16px;
+}
+
+.plan-more {
+  margin-top: 12px;
+}
+
+.plan-more-content {
+  gap: 0;
+}
+
+.plan-more-content > .field-hint {
+  margin: 0 0 8px;
+}
+
 .empty-state {
   display: grid;
   place-items: center;
@@ -847,6 +932,10 @@ button:focus-visible {
   }
 
   .planner-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-tools-panel {
     grid-template-columns: 1fr;
   }
 

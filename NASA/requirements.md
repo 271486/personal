@@ -10,7 +10,7 @@
 
 SSRS is an offline planning aid for fatigue specialists and crew members who need to explore a gradual sleep/wake schedule around mission operations. It records a crew member's plan and self-reported feedback locally, then presents the information for human review.
 
-The current browser prototype demonstrates per-crew local accounts, a one-period schedule, operation-overlap warnings, and feedback capture. It is not a certified fatigue model, medical device, operational authorization system, or flight-qualified product.
+The current local web prototype demonstrates per-crew accounts, a multi-day sleep-shift schedule, operation-overlap warnings, and feedback-driven plan updates. It is not a certified fatigue model, medical device, operational authorization system, or flight-qualified product.
 
 ## 2. Users and access protocol
 
@@ -24,10 +24,10 @@ The current browser prototype demonstrates per-crew local accounts, a one-period
 ### Prototype access
 
 1. Each crew member creates a local account using a Crew ID and password.
-2. Passwords are stored as salted PBKDF2 hashes; plans and feedback are stored in the browser's local storage.
+2. Passwords are stored as salted PBKDF2 hashes in the local SQLite database (`nasa.db`); plans and feedback are stored there as well, with browser local storage retained as a local cache.
 3. A signed-in browser session is tracked in session storage.
-4. The prototype has no specialist role, centralized account provisioning, multi-device synchronization, encrypted health-data store, or reliable protection from someone with access to the device/browser profile.
-5. Accounts created in one browser do not transfer to another device. Clearing browser data can permanently remove accounts and plans.
+4. The prototype has no specialist role, centralized account provisioning, multi-device synchronization, encrypted health-data store, or reliable protection from someone with access to the device/browser profile. The local API is for a trusted classroom demo, not a security boundary.
+5. Start `npm start` in the NASA directory and open `http://localhost:8787`; opening the HTML directly as a file will not enable SQLite persistence. The database is local to this device and is not encrypted.
 
 These controls are suitable only for a classroom demonstration with synthetic or non-sensitive data. They do not meet mission access-control requirements.
 
@@ -50,7 +50,7 @@ These controls are suitable only for a classroom demonstration with synthetic or
 - Flag overlap between the proposed sleep window and an entered required-awake operation.
 - Display a clearly labeled, unvalidated planning indicator, with its limitations visible.
 - Capture actual sleep and self-reported alertness, associated with the signed-in local crew account.
-- Allow specialist-approved caffeine and sleep-aid instructions to be recorded as text; do not create a dose, medication plan, or autonomously inferred timing.
+- Allow user-entered caffeine and sleep-aid instruction text; do not create a dose, medication plan, or autonomously inferred timing. The prototype cannot verify specialist approval.
 - Explain that sensor metrics are proxies and that the prototype does not measure hormones.
 
 ### Not in MVP
@@ -67,13 +67,13 @@ These controls are suitable only for a classroom demonstration with synthetic or
 | ID | Requirement | Acceptance / verification |
 |---|---|---|
 | FR-01 | The tool shall load its planning workflow without network access after its files are available on the device. | Disconnect network; load the local application and generate a plan. |
-| FR-02 | The prototype shall keep each Crew ID's plan and feedback separate in the local browser. | Create two test accounts; verify each sees only their own saved plan and feedback. |
+| FR-02 | The prototype shall keep each Crew ID's plan and feedback separate in local storage. | Create two synthetic test accounts; verify each sees only their own plan and feedback in normal app use. |
 | FR-03 | The planner shall accept current sleep onset, target onset, shift direction, planned sleep opportunity, and optional operation start/end. | Submit valid values and verify they are reflected in the plan. |
-| FR-04 | The demonstration algorithm shall shift sleep onset by no more than one hour per generated sleep period. | Test target gaps above one hour in both directions; verify each generated step is at most one hour. |
+| FR-04 | The demonstration algorithm shall shift sleep onset by no more than one hour per sleep period (one mission day). | Automated tests verify one-hour maximum steps in both directions. |
 | FR-05 | The tool shall show a proposed wake time and an illustrative wind-down time. | Verify wake is onset plus selected sleep opportunity and wind-down is two hours before onset, including midnight rollover. |
 | FR-06 | The tool shall warn when the proposed sleep interval overlaps a required-awake operation. | Test overlap, no-overlap, and overnight intervals. |
-| FR-07 | The tool shall retain caffeine and sleep-aid instructions only when entered by a user with approved protocol information. | Leave fields blank; verify no dose/timing is invented. Enter approved text; verify it is displayed as entered. |
-| FR-08 | The tool shall capture actual sleep and a 1–5 self-reported alertness value. | Save feedback and verify it is associated with the active Crew ID and persists locally. |
+| FR-07 | The tool shall only display user-entered caffeine or sleep-aid instructions and shall not invent treatment guidance. | Leave fields blank; verify no dose/timing is invented. Note that the prototype cannot verify that user-entered text was approved. |
+| FR-08 | The tool shall capture actual sleep and a 1–5 self-reported alertness value and refresh an existing plan from feedback. | Save feedback; verify the next plan advances one mission day, uses reported (or planned) sleep onset as its starting point, and blends sleep duration after three reports. |
 | FR-09 | The tool shall clearly identify the numeric fatigue/planning score as an unvalidated demonstration heuristic. | Inspect plan output and documentation; the score is never described as a clinical or fitness-for-duty measure. |
 | FR-10 | The tool shall explicitly state that wearable signals do not directly measure melatonin or caffeine concentration. | Inspect the evidence notes and requirements. |
 | FR-11 | The tool shall surface errors for invalid input or unavailable/corrupt local storage rather than silently presenting a saved-plan success state. | Test invalid time pairs, malformed saved data, and storage failure where the test environment permits. |
@@ -95,9 +95,9 @@ These controls are suitable only for a classroom demonstration with synthetic or
 ### MVP demonstration
 
 - **Hardware:** laptop or tablet capable of running a current standards-compliant browser. No wearable, network interface, or dedicated sensor is required.
-- **Software:** static HTML, CSS, and JavaScript; browser Web Crypto for password hashing; local storage for prototype account/plan data; session storage for the active browser session.
-- **Connectivity:** no network required during planning. Files can be opened from an approved local origin; supported-browser/Web Crypto behavior must be tested on the target device.
-- **Storage:** browser-managed and device-local. Capacity, durability, backup, and security are not guaranteed by this prototype.
+- **Software:** HTML, CSS, and JavaScript served by a local Node.js server; browser Web Crypto for password hashing; SQLite (`nasa.db`) for local accounts/plans/feedback; browser local/session storage for demonstration account cache and active session.
+- **Connectivity:** no cloud or external network required; start the local server with `npm start` and open `http://localhost:8787`.
+- **Storage:** device-local SQLite database, unencrypted and without mission-grade access control. Use synthetic data only.
 - **Time:** user-entered 24-hour clock values. Mission time zone/epoch, daylight-saving rules, clock synchronization, and lunar mission time standard remain mission-level decisions.
 
 ### Flight candidate (future; not specified by this prototype)
@@ -119,8 +119,8 @@ These controls are suitable only for a classroom demonstration with synthetic or
 6. Caffeine calculations are not implemented. The supplied notes describe a generic five-to-six-hour half-life estimate, but do not support individual clearance, an allowable dose, or a safe cut-off time.
 7. Melatonin timing/dose is not generated. The supplied notes describe laboratory DLMO assessment and do not provide a clinically approved medication protocol.
 8. Light and exercise advice is limited to following the mission-approved plan; the prototype does not control lighting or assign exercise.
-9. The numeric score currently combines selected sleep opportunity, current shift size, and most recent self-reported alertness using a simple unvalidated formula. It is not a predictive fatigue model and must not be used for operational decisions.
-10. Feedback is stored for review. A future adaptive system must have defined training data, validation, uncertainty display, human approval, and a safe rollback path before changing recommendations.
+9. The numeric score currently combines selected sleep opportunity, current shift size, recent sleep debt, operation count, and most recent self-reported alertness using a simple unvalidated formula. It is not a predictive fatigue model and must not be used for operational decisions.
+10. Saving feedback refreshes an existing plan: reported sleep onset becomes the next starting point (otherwise the planned onset is used), the mission day advances by one up to the operation day, and the next schedule is recalculated. From three feedback reports onward, planned sleep opportunity is blended with average reported sleep, clamped to 5–10 hours. This is a simple personalization rule, not a validated learning model.
 
 ## 8. Evidence and data-quality assessment
 
@@ -163,7 +163,9 @@ Design implications:
 | Midnight arithmetic | Onset, wake, and wind-down times wrap correctly across midnight. |
 | Operation conflict | A sleep/operation overlap is flagged, including intervals crossing midnight. |
 | Feedback persistence | Feedback remains associated with the correct local Crew ID after sign-out/sign-in. |
+| Feedback adaptation | Each saved entry advances the plan one mission day and uses actual (or planned) onset; three or more entries blend observed sleep into sleep opportunity. |
 | Output safety | User-provided HTML-like text is displayed as text, not executed as markup. |
+| Operation input validation | Malformed nonblank operation rows produce an actionable error instead of being silently ignored. |
 | Medical boundary | No autonomous caffeine or sleep-aid dose/timing is invented; evidence caveats remain visible. |
 | Accessibility/responsive behavior | Keyboard, visible focus, labels, and tablet/narrow layouts are usable. |
 

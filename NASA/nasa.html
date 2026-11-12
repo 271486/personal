@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#07111f">
     <title>Lunar Sleep-Shift Scheduling Tool</title>
     <link rel="stylesheet" href="nasa.css">
+    <script src="scheduler.js" defer></script>
     <script src="nasa.js" defer></script>
   </head>
   <body>
@@ -45,13 +46,6 @@
               <label for="crew-name">Crew member name</label>
               <input id="crew-name" name="name" autocomplete="name" maxlength="60" placeholder="e.g. Crew Member 1">
             </div>
-            <div id="role-field" class="field hidden">
-              <label for="crew-role">Role</label>
-              <select id="crew-role" name="role">
-                <option value="crew">Crew member</option>
-                <option value="fatigue-specialist">Fatigue specialist</option>
-              </select>
-            </div>
             <div class="field">
               <label for="crew-id">Crew ID</label>
               <input id="crew-id" name="crewId" autocomplete="username" minlength="3" maxlength="24" required placeholder="e.g. crew-01">
@@ -68,7 +62,7 @@
             <p id="auth-message" class="form-message" role="status" aria-live="polite"></p>
             <button id="auth-submit" class="button button-primary full-width" type="submit">Sign in</button>
           </form>
-          <p class="security-note">Prototype only: accounts and plans stay in this browser. This is not mission-grade access control or encrypted storage.</p>
+          <p class="security-note">Classroom prototype only. Data is stored locally in an unencrypted database; use synthetic data, not real health information.</p>
         </div>
       </section>
 
@@ -82,12 +76,79 @@
           <button id="logout-button" class="button button-outline" type="button">Sign out</button>
         </header>
 
+        <section class="panel quick-tools-panel" aria-labelledby="quick-tools-title">
+          <div>
+            <p class="eyebrow">QUICK TOOLS</p>
+            <h2 id="quick-tools-title">Lunar sleep scheduler</h2>
+            <p class="muted">Check in on alertness, create a gradual mission shift, or estimate sleep-based fatigue.</p>
+          </div>
+          <form id="quick-tool-form" class="quick-tool-form" novalidate>
+            <div class="field">
+              <label for="quick-tool-choice">What do you need help with?</label>
+              <select id="quick-tool-choice" name="tool">
+                <option value="groggy">I woke up feeling groggy</option>
+                <option value="sleep">I am having trouble falling asleep</option>
+                <option value="shift">I need to shift my sleep schedule for a mission</option>
+                <option value="fatigue">I need to estimate my sleep-based fatigue score</option>
+              </select>
+            </div>
+            <div id="groggy-fields" class="quick-tool-fields">
+              <div class="field">
+                <label for="grogginess-rating">How groggy are you? (0 = not at all, 10 = extremely)</label>
+                <input id="grogginess-rating" name="grogginess" type="number" min="0" max="10" step="0.1" value="5">
+              </div>
+            </div>
+            <div id="sleep-fields" class="quick-tool-fields hidden">
+              <div class="field">
+                <label for="awake-rating">How alert do you feel right now? (0–10)</label>
+                <input id="awake-rating" name="awakeRating" type="number" min="0" max="10" step="0.1" value="5">
+              </div>
+            </div>
+            <div id="shift-fields" class="quick-tool-fields hidden">
+              <div class="form-row">
+                <div class="field">
+                  <label for="quick-current-bedtime">Current sleep onset</label>
+                  <input id="quick-current-bedtime" name="quickCurrentBedtime" type="time" value="22:00">
+                </div>
+                <div class="field">
+                  <label for="quick-target-bedtime">Mission-day target sleep onset</label>
+                  <input id="quick-target-bedtime" name="quickTargetBedtime" type="time" value="22:00">
+                </div>
+              </div>
+              <div class="field">
+                <label for="quick-shift-days">Days until mission</label>
+                <input id="quick-shift-days" name="quickShiftDays" type="number" min="1" max="364" step="1" value="7">
+              </div>
+              <p class="field-hint">The full planner limits each sleep-onset change to 1 hour and displays the glide path.</p>
+            </div>
+            <div id="fatigue-fields" class="quick-tool-fields hidden">
+              <div class="form-row">
+                <div class="field">
+                  <label for="fatigue-bedtime">Sleep onset</label>
+                  <input id="fatigue-bedtime" name="fatigueBedtime" type="time" value="22:00">
+                </div>
+                <div class="field">
+                  <label for="fatigue-wake-time">Wake time</label>
+                  <input id="fatigue-wake-time" name="fatigueWakeTime" type="time" value="06:00">
+                </div>
+              </div>
+              <div class="field">
+                <label for="fatigue-nap-minutes">Nap duration (minutes; enter 0 for none)</label>
+                <input id="fatigue-nap-minutes" name="napMinutes" type="number" min="0" max="1440" step="1" value="0">
+              </div>
+              <p class="field-hint">This simple sleep-duration estimate is not a clinical fatigue measure or fitness-for-duty assessment.</p>
+            </div>
+            <button class="button button-primary" type="submit">Run quick check</button>
+            <p id="quick-tool-result" class="quick-tool-result" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
         <div class="planner-grid">
           <form id="plan-form" class="panel form-stack">
             <div>
               <p class="eyebrow">NEXT SLEEP PERIOD</p>
-              <h2>Build a daily plan</h2>
-              <p class="muted">Adjust the inputs to explore a schedule. Save the plan on this device.</p>
+              <h2>Build your sleep plan</h2>
+              <p class="muted">Choose your sleep times and opportunity, then generate a plan.</p>
             </div>
             <div class="form-row">
               <div class="field">
@@ -115,9 +176,11 @@
                 </div>
               </div>
             </div>
+            <details class="advanced-settings">
+              <summary>Mission and optional settings</summary>
+              <div class="advanced-settings-content">
             <fieldset class="field-set">
-              <legend>Mission-day shift window</legend>
-              <p class="field-hint">Use the mission days to model a delayed operation, such as an EVA moved from Day 2 to Day 7.</p>
+              <legend>Mission days</legend>
               <div class="form-row">
                 <div class="field">
                   <label for="current-mission-day">Plan starts on</label>
@@ -134,9 +197,10 @@
                   </div>
                 </div>
               </div>
-              <p class="field-hint">Add one operation per line as: mission day, start, end, label. Example: 7,08:00,14:00,EVA 1</p>
-              <textarea id="operations" name="operations" rows="3" maxlength="1000" placeholder="7,08:00,14:00,EVA 1&#10;10,06:00,12:00; docking"></textarea>
-              <p class="field-hint">Operations take priority. The legacy start/end fields below remain available for one operation.</p>
+              <div class="field">
+                <label for="operations">Operations <span class="optional">(optional; one per line)</span></label>
+                <textarea id="operations" name="operations" rows="2" maxlength="1000" placeholder="7,08:00,14:00,EVA 1&#10;10,06:00,12:00,Docking"></textarea>
+              </div>
               <div class="form-row">
                 <div class="field">
                   <label for="operation-start">Operation starts</label>
@@ -173,15 +237,17 @@
               <label for="sleep-aid-instruction">Approved sleep-aid instruction <span class="optional">(optional)</span></label>
               <input id="sleep-aid-instruction" name="sleepAidInstruction" maxlength="160" placeholder="Enter only a flight-surgeon-approved instruction">
             </div>
+              </div>
+            </details>
             <p id="plan-message" class="form-message" role="status" aria-live="polite"></p>
-            <button class="button button-primary full-width" type="submit">Generate multi-day plan</button>
+            <button class="button button-primary full-width" type="submit">Build plan</button>
           </form>
 
           <section class="panel result-panel" aria-labelledby="result-title">
             <div class="result-heading">
               <div>
                 <p class="eyebrow">RECOMMENDATION</p>
-                <h2 id="result-title">Your plan will appear here</h2>
+                <h2 id="result-title">Your plan</h2>
               </div>
               <div id="fatigue-score" class="score-badge hidden" aria-live="polite">
                 <strong id="score-value">—</strong>
@@ -190,7 +256,7 @@
             </div>
             <button id="copy-constraints" class="button button-outline copy-button hidden" type="button">Copy Ops constraints</button>
             <div id="plan-output" class="plan-output empty-state">
-              <p>Enter the current and target sleep times, then generate a plan.</p>
+              <p>Your recommended sleep and wake times will appear here.</p>
             </div>
             <p class="score-disclaimer">The planning indicator is a simple, unvalidated heuristic—not a clinical fatigue measure or fitness-for-duty assessment.</p>
             <div id="save-status" class="save-status" aria-live="polite"></div>
@@ -217,7 +283,7 @@
             <div>
               <p class="eyebrow">CLOSE THE LOOP</p>
               <h2 id="feedback-title">How did it go?</h2>
-              <p class="muted">Record adherence and alertness to support review with your fatigue specialist.</p>
+              <p class="muted">Saving feedback refreshes your plan. Reported sleep onset becomes the new starting time; sleep duration is personalized after 3 reports.</p>
             </div>
           </div>
           <form id="feedback-form" class="feedback-form">
@@ -263,14 +329,14 @@
             <li>A caffeine half-life calculation is only a population-level estimate and varies between people. This prototype does not calculate caffeine clearance or recommend a dose or timing.</li>
             <li>Melatonin timing such as dim-light melatonin onset requires an appropriate clinical measurement; this prototype does not infer hormone levels or recommend sleep-aid use.</li>
             <li>Sleep shifting is a normal planning challenge in rotating night-work settings such as nursing, emergency response, aviation, military operations, and remote or offshore work. <a href="https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod7/06.html" target="_blank" rel="noopener noreferrer">NIOSH notes prophylactic naps before night shifts</a> can support alertness, while <a href="https://www.cdc.gov/niosh/work-hour-training-for-nurses/longhours/mod7/03.html" target="_blank" rel="noopener noreferrer">sleep inertia after waking</a> can temporarily affect performance. These settings are useful comparison cases, not interchangeable EVA protocols.</li>
-            <li>For this prototype, shift sleep onset by no more than 2 hours per 24 hours. Any melatonin or stimulant use must be the minimum flight-surgeon-approved plan needed to avoid sleep inertia or excessive stimulation; no dose or timing is generated here.</li>
+            <li>For this prototype, shift sleep onset by no more than 1 hour per sleep period. Any melatonin or stimulant use must follow the flight-surgeon-approved plan; no dose or timing is generated here.</li>
             <li>The planning indicator is an unvalidated demonstration heuristic. It must not be used for clinical decisions, operational fitness-for-duty, or crew task assignment.</li>
             <li>All generated schedules are proposals. Mission operations and flight-surgeon or fatigue-specialist instructions take priority.</li>
           </ul>
         </details>
 
         <footer class="site-footer">
-          <p>Local prototype · No network connection required · Data is stored in this browser only</p>
+          <p>Local prototype · No cloud connection required · Plans and feedback are stored in the local SQLite database</p>
         </footer>
       </section>
     </main>

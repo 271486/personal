@@ -16,8 +16,8 @@ SSRS is an offline-first student prototype for exploring personalized sleep/wake
 - A conservative one-hour-per-sleep-period schedule adjustment.
 - Proposed wind-down and wake times.
 - An operation-conflict warning that leaves operational decisions to the mission team.
-- Local feedback capture and visible limitations for the planning indicator.
-- Offline operation without a cloud service.
+- Feedback capture that advances the saved schedule using reported (or planned) sleep onset and personalizes sleep opportunity after three reports.
+- Local SQLite storage without a cloud service; use synthetic data only.
 
 ### Safety and research boundaries
 

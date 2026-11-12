@@ -3,8 +3,17 @@
 
   const ACCOUNTS_KEY = "ssrs.accounts.v1";
   const SESSION_KEY = "ssrs.activeCrew";
+  const API_BASE = "/api";
   const ITERATIONS = 210000;
-  const MAX_DAILY_SHIFT_MINUTES = 120;
+  const {
+    MAX_DAILY_SHIFT_MINUTES,
+    calculateFatigueScore,
+    formatTime,
+    makePlan,
+    parseOperations,
+    refreshPlanFromFeedback,
+    timeToMinutes
+  } = window.SleepShiftScheduler;
   const CREW_COLORS = ["#83d9c1", "#8fb8ff", "#d9a7ff", "#ffb36b", "#ff8f9c", "#b9d66f"];
   const $ = (selector) => document.querySelector(selector);
 
@@ -13,6 +22,9 @@
   const authForm = $("#auth-form");
   const authMessage = $("#auth-message");
   const planForm = $("#plan-form");
+  const quickToolForm = $("#quick-tool-form");
+  const quickToolChoice = $("#quick-tool-choice");
+  const quickToolResult = $("#quick-tool-result");
   const planMessage = $("#plan-message");
   const planOutput = $("#plan-output");
   const feedbackMessage = $("#feedback-message");
@@ -27,6 +39,14 @@
   function setMessage(element, message, success = false) {
     element.textContent = message;
     element.classList.toggle("success", success);
+  }
+
+  function showQuickToolFields() {
+    const activeFields = `${quickToolChoice.value}-fields`;
+    for (const fields of document.querySelectorAll(".quick-tool-fields")) {
+      fields.classList.toggle("hidden", fields.id !== activeFields);
+    }
+    setMessage(quickToolResult, "");
   }
 
   function getAccounts() {
@@ -61,6 +81,53 @@
 
   function saveCrewData(crewId, data) {
     localStorage.setItem(`ssrs.crew.${crewId}`, JSON.stringify(data));
+  }
+
+  async function getApiError(response, fallback) {
+    const body = await response.text();
+    let detail = "";
+    try {
+      const result = JSON.parse(body);
+      detail = typeof result.error === "string" ? result.error : "";
+    } catch {
+      detail = body.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
+    }
+    return `${fallback} (HTTP ${response.status}${detail ? `: ${detail}` : ""}). Make sure the app was started with node server.js.`;
+  }
+
+  async function persistUser(account) {
+    const response = await fetch(`${API_BASE}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(account)
+    });
+    if (!response.ok) {
+      throw new Error(await getApiError(response, "The local database rejected the user record"));
+    }
+  }
+
+  async function persistCrewData(crewId, data) {
+    const response = await fetch(`${API_BASE}/crew/${encodeURIComponent(crewId)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      throw new Error(await getApiError(response, "The local database rejected the crew data"));
+    }
+  }
+
+  async function loadCrewDataFromDatabase(crewId) {
+    const response = await fetch(`${API_BASE}/crew/${encodeURIComponent(crewId)}`);
+    if (!response.ok) throw new Error("The local database could not load this crew member's data.");
+    const data = await response.json();
+    if (!data || !Array.isArray(data.feedback)) throw new Error("The local database returned invalid crew data.");
+    const normalized = {
+      plan: data.plan && typeof data.plan === "object" ? data.plan : null,
+      feedback: data.feedback
+    };
+    saveCrewData(crewId, normalized);
+    return normalized;
   }
 
   function encodeBytes(bytes) {
@@ -107,7 +174,6 @@
     $("#login-tab").setAttribute("aria-selected", String(!creating));
     $("#create-tab").setAttribute("aria-selected", String(creating));
     $("#name-field").classList.toggle("hidden", !creating);
-    $("#role-field").classList.toggle("hidden", !creating);
     $("#confirm-field").classList.toggle("hidden", !creating);
     $("#auth-heading").textContent = creating ? "Create crew account" : "Crew sign in";
     $("#auth-description").textContent = creating
@@ -162,75 +228,6 @@
     $("#crew-color-indicator").setAttribute("title", `${account.name} crew color`);
     plannerScreen.style.setProperty("--crew-color", crewColor);
     renderSavedData();
-  }
-
-  function timeToMinutes(value) {
-    const [hours, minutes] = value.split(":").map(Number);
-    return hours * 60 + minutes;
-  }
-
-  function formatTime(totalMinutes) {
-    const wrapped = ((totalMinutes % 1440) + 1440) % 1440;
-    const hours = Math.floor(wrapped / 60);
-    const minutes = wrapped % 60;
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  }
-
-  function minutesUntilTarget(current, target, direction) {
-    if (current === target) return 0;
-    return direction === "earlier"
-      ? (current - target + 1440) % 1440
-      : (target - current + 1440) % 1440;
-  }
-
-  function overlapsOperation(sleepStart, sleepEnd, operationStart, operationEnd) {
-    if (!operationStart || !operationEnd) return false;
-    const operationStartMinutes = timeToMinutes(operationStart);
-    let operationEndMinutes = timeToMinutes(operationEnd);
-    if (operationEndMinutes <= operationStartMinutes) operationEndMinutes += 1440;
-
-    for (const offset of [-1440, 0, 1440, 2880]) {
-      const start = operationStartMinutes + offset;
-      const end = operationEndMinutes + offset;
-      if (sleepStart < end && start < sleepEnd) return true;
-    }
-    return false;
-  }
-
-  function calculateFatigueScore(sleepHours, shiftHours, latestAlertness, sleepDebt = 0, operationCount = 0) {
-    const sleepBurden = Math.max(0, 8 - sleepHours) * 12;
-    const shiftBurden = Math.min(20, shiftHours * 10);
-    const alertnessBurden = (5 - latestAlertness) * 5;
-    const debtBurden = Math.min(25, Math.max(0, sleepDebt) * 4);
-    const operationBurden = Math.min(15, operationCount * 3);
-    return Math.max(0, Math.min(100, Math.round(sleepBurden + shiftBurden + alertnessBurden + debtBurden + operationBurden)));
-  }
-
-  function parseOperations(value, legacyStart, legacyEnd, currentDay) {
-    const operations = String(value || "").split("\n").map((line) => {
-      const [day, start, end, ...labelParts] = line.split(",").map((part) => part.trim());
-      if (!day || !start || !end || !/^\d{1,3}$/.test(day) || !/^\d{2}:\d{2}$/.test(start) || !/^\d{2}:\d{2}$/.test(end)) return null;
-      return { day: Number(day), start, end, label: labelParts.join(",") || "Operation" };
-    }).filter(Boolean);
-    if (!operations.length && legacyStart && legacyEnd) {
-      operations.push({ day: currentDay, start: legacyStart, end: legacyEnd, label: "Required operation" });
-    }
-    return operations;
-  }
-
-  function lunarContext(day, start, length) {
-    if (!start || !length) return "Lunar light cycle not specified; follow the habitat lighting plan.";
-    const phase = (day - start + 28) % 28;
-    return phase < length
-      ? "Lunar light phase: use mission-approved bright-light timing and protect wind-down light reduction."
-      : "Lunar dark phase: use mission-approved light exposure to anchor the schedule.";
-  }
-
-  function getPersonalizedSleepNeed(feedback, requested) {
-    const actual = feedback.map((entry) => Number(entry.actualSleep)).filter(Number.isFinite);
-    if (actual.length < 3) return requested;
-    const average = actual.reduce((sum, value) => sum + value, 0) / actual.length;
-    return Math.max(5, Math.min(10, Math.round(((requested + average) / 2) * 2) / 2));
   }
 
   function getPlanOperations(plan) {
@@ -289,59 +286,6 @@
     ].join("\n");
   }
 
-  function makePlan(formValues, latestAlertness = 3, feedback = []) {
-    const currentBedtime = timeToMinutes(formValues.currentBedtime);
-    const targetBedtime = timeToMinutes(formValues.targetBedtime);
-    const distance = minutesUntilTarget(currentBedtime, targetBedtime, formValues.direction);
-    const shiftMinutes = Math.min(distance, MAX_DAILY_SHIFT_MINUTES);
-    const directionSign = formValues.direction === "earlier" ? -1 : 1;
-    const recommendedBedtime = currentBedtime + shiftMinutes * directionSign;
-    const sleepHours = getPersonalizedSleepNeed(feedback, Number(formValues.sleepDuration));
-    const wakeTime = recommendedBedtime + sleepHours * 60;
-    const remainingPeriods = Math.ceil(distance / MAX_DAILY_SHIFT_MINUTES);
-    const daysToOperation = formValues.operationDay - formValues.currentMissionDay;
-    const scheduleRisk = distance > Math.max(0, daysToOperation) * MAX_DAILY_SHIFT_MINUTES;
-    const sleepDebt = feedback.slice(-7).reduce((sum, entry) => sum + Math.max(0, 8 - Number(entry.actualSleep)), 0);
-    const schedule = [];
-    for (let day = formValues.currentMissionDay; day <= formValues.operationDay; day += 1) {
-      const elapsed = day - formValues.currentMissionDay;
-      const dailyShift = Math.min(distance, elapsed * MAX_DAILY_SHIFT_MINUTES);
-      const bedtime = currentBedtime + dailyShift * directionSign;
-      const operations = formValues.operations.filter((operation) => operation.day === day);
-      schedule.push({
-        day,
-        bedtime: formatTime(bedtime),
-        wake: formatTime(bedtime + sleepHours * 60),
-        operations,
-        lunar: lunarContext(day, formValues.lightCycleStart, formValues.lightCycleLength)
-      });
-    }
-    const conflict = formValues.operations
-      .filter((operation) => operation.day === formValues.currentMissionDay)
-      .some((operation) => overlapsOperation(
-        recommendedBedtime,
-        wakeTime,
-        operation.start,
-        operation.end
-      ));
-    return {
-      formValues,
-      recommendedBedtime: formatTime(recommendedBedtime),
-      windDown: formatTime(recommendedBedtime - 120),
-      wakeTime: formatTime(wakeTime),
-      sleepHours,
-      shiftHours: shiftMinutes / 60,
-      remainingPeriods,
-      daysToOperation,
-      scheduleRisk,
-      sleepDebt,
-      schedule,
-      conflict,
-      score: calculateFatigueScore(sleepHours, shiftMinutes / 60, latestAlertness, sleepDebt, formValues.operations.length),
-      generatedAt: new Date().toISOString()
-    };
-  }
-
   function renderCalendar(plan) {
     if (!plan) {
       missionCalendar.classList.add("hidden");
@@ -393,12 +337,12 @@
 
   function renderPlan(plan) {
     if (!plan) {
-      $("#result-title").textContent = "Your plan will appear here";
+      $("#result-title").textContent = "Your sleep plan";
       $("#fatigue-score").classList.add("hidden");
       copyConstraintsButton.classList.add("hidden");
       delete copyConstraintsButton.dataset.constraints;
       planOutput.className = "plan-output empty-state";
-      planOutput.innerHTML = "<p>Enter the current and target sleep times, then generate a plan.</p>";
+      planOutput.innerHTML = "<p>Enter your current and target sleep times, then select Build plan.</p>";
       renderCalendar(null);
       return;
     }
@@ -412,11 +356,12 @@
     planOutput.className = "plan-output";
 
     const shiftSummary = plan.shiftHours === 0
-      ? "No sleep-onset shift needed for this period."
-      : `Shift ${plan.shiftHours} hour${plan.shiftHours === 1 ? "" : "s"} ${plan.formValues.direction}; allow about 24 hours before the next adjustment.`;
+      ? "Your target sleep time is already reached."
+      : `Shift ${plan.shiftHours} hour${plan.shiftHours === 1 ? "" : "s"} ${plan.formValues.direction}.`;
     const periodsSummary = plan.remainingPeriods === 0
-      ? "Target sleep time already reached."
-      : `About ${plan.remainingPeriods} sleep period${plan.remainingPeriods === 1 ? "" : "s"} to reach the target at this pace.`;
+      ? ""
+      : `About ${plan.remainingPeriods} sleep period${plan.remainingPeriods === 1 ? "" : "s"} to reach your target.`;
+    const progressSummary = periodsSummary ? `${shiftSummary} ${periodsSummary}` : shiftSummary;
     const shiftWindow = plan.formValues.currentMissionDay && plan.formValues.operationDay
       ? `Mission Day ${plan.formValues.currentMissionDay} to Day ${plan.formValues.operationDay}`
       : "Mission-day window not recorded";
@@ -435,7 +380,7 @@
       lunar: "Legacy saved plan; regenerate to include the multi-day schedule."
     }];
     const scheduleMarkup = schedule.map((day) => {
-      const operations = day.operations.length
+      const operations = Array.isArray(day.operations) && day.operations.length
         ? ` Operations: ${day.operations.map((operation) => `${operation.label} ${operation.start}–${operation.end}`).join("; ")}`
         : "";
       return `<div class="schedule-day"><strong>Day ${day.day}</strong><span>Sleep ${escapeHTML(day.bedtime)}–${escapeHTML(day.wake)}</span><p>${escapeHTML(day.lunar)}${escapeHTML(operations)}</p></div>`;
@@ -444,21 +389,29 @@
       ? `<div class="plan-alert"><strong>Operation conflict</strong>This sleep opportunity overlaps the required awake operation. Operations take priority; coordinate a revised plan with the fatigue specialist.</div>`
       : "";
     const scheduleMessage = plan.scheduleRisk
-      ? `<div class="plan-alert"><strong>Not enough transition time</strong>${escapeHTML(shiftWindow)} allows ${Math.max(0, plan.daysToOperation) * (MAX_DAILY_SHIFT_MINUTES / 60)} hours of gradual shift at the 2-hour-per-day ceiling, but the requested target needs more. Coordinate a revised sleep target or operation plan.</div>`
+      ? `<div class="plan-alert"><strong>Not enough transition time</strong>${escapeHTML(shiftWindow)} allows ${Math.max(0, plan.daysToOperation) * (MAX_DAILY_SHIFT_MINUTES / 60)} hours of gradual shift at the 1-hour-per-day ceiling, but the requested target needs more. Coordinate a revised sleep target or operation plan.</div>`
       : "";
 
     planOutput.innerHTML = `
       ${conflictMessage}
       ${scheduleMessage}
-      <div class="plan-item"><span class="plan-time">${escapeHTML(plan.windDown)}</span><div class="plan-detail"><strong>Wind-down</strong><p>Begin a low-stimulation wind-down period ahead of sleep.</p></div></div>
-      <div class="plan-item"><span class="plan-time">${escapeHTML(plan.recommendedBedtime)}</span><div class="plan-detail"><strong>Recommended sleep onset</strong><p>${escapeHTML(shiftWindow)}. ${escapeHTML(shiftSummary)} ${escapeHTML(periodsSummary)} This prototype caps shifts at 2 hours per 24 hours.</p></div></div>
-      <div class="plan-item"><span class="plan-time">${escapeHTML(plan.wakeTime)}</span><div class="plan-detail"><strong>Recommended wake time</strong><p>${escapeHTML(plan.sleepHours)} hours of planned sleep opportunity.</p></div></div>
-      <div class="plan-item"><span class="plan-time">Planned</span><div class="plan-detail"><strong>Nap</strong><p>${escapeHTML(countermeasures.nap)}</p></div></div>
-      <div class="plan-item"><span class="plan-time">Protocol</span><div class="plan-detail"><strong>Caffeine</strong><p>${escapeHTML(countermeasures.caffeine)} ${caffeine}</p></div></div>
-      <div class="plan-item"><span class="plan-time">Protocol</span><div class="plan-detail"><strong>Sleep aid</strong><p>${escapeHTML(countermeasures.sleepAid)} ${sleepAid}</p></div></div>
-      <div class="plan-item"><span class="plan-time">Mission plan</span><div class="plan-detail"><strong>Light, exercise, and operations</strong><p>Reduce bright/blue-enriched light during wind-down, avoid vigorous exercise close to sleep, and protect the required awake window. ${escapeHTML(countermeasures.operation)}</p></div></div>
-      <div class="plan-item"><span class="plan-time">Risk input</span><div class="plan-detail"><strong>Recent sleep debt</strong><p>${escapeHTML(sleepDebt.toFixed(1))} hours accumulated across the latest seven feedback entries. After three or more entries, the planned sleep opportunity is blended with the crew member's observed average.</p></div></div>
-      <div class="plan-item schedule-item"><span class="plan-time">Glide path</span><div class="plan-detail"><strong>Multi-day schedule</strong>${scheduleMarkup}</div></div>
+      <div class="primary-plan">
+        <div class="plan-item"><span class="plan-time">${escapeHTML(plan.windDown)}</span><div class="plan-detail"><strong>Start winding down</strong><p>Begin a low-stimulation wind-down before sleep.</p></div></div>
+        <div class="plan-item"><span class="plan-time">${escapeHTML(plan.recommendedBedtime)}</span><div class="plan-detail"><strong>Go to sleep</strong><p>${escapeHTML(progressSummary)}</p></div></div>
+        <div class="plan-item"><span class="plan-time">${escapeHTML(plan.wakeTime)}</span><div class="plan-detail"><strong>Wake up</strong><p>${escapeHTML(plan.sleepHours)} hours of planned sleep.</p></div></div>
+      </div>
+      <details class="plan-more">
+        <summary>More plan details</summary>
+        <div class="plan-more-content">
+          <p class="field-hint">${escapeHTML(shiftWindow)}. Sleep shifts are limited to 1 hour per sleep period.</p>
+          <div class="plan-item"><span class="plan-time">Planned</span><div class="plan-detail"><strong>Nap</strong><p>${escapeHTML(countermeasures.nap)}</p></div></div>
+          <div class="plan-item"><span class="plan-time">Protocol</span><div class="plan-detail"><strong>Caffeine</strong><p>${escapeHTML(countermeasures.caffeine)} ${caffeine}</p></div></div>
+          <div class="plan-item"><span class="plan-time">Protocol</span><div class="plan-detail"><strong>Sleep aid</strong><p>${escapeHTML(countermeasures.sleepAid)} ${sleepAid}</p></div></div>
+          <div class="plan-item"><span class="plan-time">Mission</span><div class="plan-detail"><strong>Light, exercise, and operations</strong><p>Reduce bright light before sleep, avoid vigorous exercise close to sleep, and protect required awake time. ${escapeHTML(countermeasures.operation)}</p></div></div>
+          <div class="plan-item"><span class="plan-time">Risk</span><div class="plan-detail"><strong>Recent sleep debt</strong><p>${escapeHTML((Number.isFinite(plan.sleepDebt) ? plan.sleepDebt : 0).toFixed(1))} hours across the latest seven feedback entries. After three or more entries, planned sleep is blended with the crew member's observed average.</p></div></div>
+          <div class="plan-item schedule-item"><span class="plan-time">Schedule</span><div class="plan-detail"><strong>Multi-day plan</strong>${scheduleMarkup}</div></div>
+        </div>
+      </details>
     `;
   }
 
@@ -478,8 +431,13 @@
     }).join("");
   }
 
-  function renderSavedData() {
-    const data = getCrewData(activeCrewId);
+  async function renderSavedData() {
+    let data = getCrewData(activeCrewId);
+    try {
+      data = await loadCrewDataFromDatabase(activeCrewId);
+    } catch (error) {
+      setMessage(planMessage, `Could not load the local database: ${error instanceof Error ? error.message : "Unknown error."}`);
+    }
     currentPlan = data.plan;
     renderPlan(currentPlan);
     renderFeedback(data.feedback);
@@ -525,7 +483,7 @@
       const accounts = getAccounts();
       if (authMode === "create") {
         const name = String(form.get("name")).trim();
-        const role = String(form.get("role")) === "fatigue-specialist" ? "fatigue-specialist" : "crew";
+        const role = "crew";
         const confirmPassword = String(form.get("confirmPassword"));
         if (!name) {
           setMessage(authMessage, "Enter a crew member name.");
@@ -541,9 +499,13 @@
         }
         const salt = crypto.getRandomValues(new Uint8Array(16));
         const passwordHash = await hashPassword(password, salt);
-        accounts.push({ id: crewId, name, role, color: getAvailableCrewColor(accounts, crewId), salt: encodeBytes(salt), passwordHash });
+        const account = { id: crewId, name, role, color: getAvailableCrewColor(accounts, crewId), salt: encodeBytes(salt), passwordHash };
+        await persistUser(account);
+        accounts.push(account);
         localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-        saveCrewData(crewId, { plan: null, feedback: [] });
+        const crewData = { plan: null, feedback: [] };
+        saveCrewData(crewId, crewData);
+        await persistCrewData(crewId, crewData);
         showPlanner(crewId);
       } else {
         const account = accounts.find((candidate) => candidate.id === crewId);
@@ -556,6 +518,9 @@
           setMessage(authMessage, "Incorrect Crew ID or password.");
           return;
         }
+        await persistUser(account);
+        const localData = getCrewData(crewId);
+        if (localData.plan || localData.feedback.length) await persistCrewData(crewId, localData);
         showPlanner(crewId);
       }
     } catch (error) {
@@ -585,7 +550,87 @@
     }
   });
 
-  planForm.addEventListener("submit", (event) => {
+  quickToolChoice.addEventListener("change", showQuickToolFields);
+  quickToolForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    setMessage(quickToolResult, "");
+    const form = new FormData(quickToolForm);
+    const tool = String(form.get("tool"));
+
+    if (tool === "groggy") {
+      const rating = Number(form.get("grogginess"));
+      if (!Number.isFinite(rating) || rating < 0 || rating > 10) {
+        setMessage(quickToolResult, "Enter a grogginess rating from 0 to 10.");
+        return;
+      }
+      const guidance = rating >= 6.66
+        ? "A high grogginess rating is a reason to pause before safety-critical work and alert your crew lead or fatigue specialist."
+        : rating >= 3.33
+          ? "Take time to fully wake up before safety-critical work, and follow your mission-approved alertness protocol."
+          : "Continue to monitor how alert you feel before taking on safety-critical work.";
+      setMessage(quickToolResult, `${guidance} Hypothetical demo recommendation: consider caffeine only if it is allowed by your mission-approved plan. This tool does not provide a dose or determine whether caffeine is safe for you.`, true);
+      return;
+    }
+
+    if (tool === "sleep") {
+      const rating = Number(form.get("awakeRating"));
+      if (!Number.isFinite(rating) || rating < 0 || rating > 10) {
+        setMessage(quickToolResult, "Enter an alertness rating from 0 to 10.");
+        return;
+      }
+      const guidance = rating >= 6.66
+        ? "If you feel very alert, try a quiet, low-stimulation wind-down and reduce bright light."
+        : rating >= 3.33
+          ? "A consistent, low-stimulation wind-down may help; avoid intense exercise close to bedtime."
+          : "You report lower alertness. Keep your planned sleep opportunity and wind-down routine.";
+      setMessage(quickToolResult, `${guidance} Hypothetical demo recommendation: consider melatonin only if it is part of your clinician- and mission-approved plan. This tool does not provide a dose or determine whether melatonin is safe for you.`, true);
+      return;
+    }
+
+    if (tool === "shift") {
+      const currentBedtime = String(form.get("quickCurrentBedtime"));
+      const targetBedtime = String(form.get("quickTargetBedtime"));
+      const daysUntilMission = Number(form.get("quickShiftDays"));
+      const currentMissionDay = Number(planForm.elements.namedItem("currentMissionDay").value);
+      if (!currentBedtime || !targetBedtime ||
+        !Number.isInteger(daysUntilMission) || daysUntilMission < 1 ||
+        !Number.isInteger(currentMissionDay) || currentMissionDay < 1 ||
+        currentMissionDay + daysUntilMission > 365) {
+        setMessage(quickToolResult, "Enter valid sleep times and 1–364 days, within the planner’s 365-day mission window.");
+        return;
+      }
+
+      planForm.elements.namedItem("currentBedtime").value = currentBedtime;
+      planForm.elements.namedItem("targetBedtime").value = targetBedtime;
+      planForm.elements.namedItem("direction").value =
+        timeToMinutes(targetBedtime) < timeToMinutes(currentBedtime) ? "earlier" : "later";
+      planForm.elements.namedItem("operationDay").value = String(currentMissionDay + daysUntilMission);
+      planForm.requestSubmit();
+      setMessage(quickToolResult, "The mission planner is generating your gradual sleep-shift schedule.", true);
+      return;
+    }
+
+    if (tool === "fatigue") {
+      const bedtime = String(form.get("fatigueBedtime"));
+      const wakeTime = String(form.get("fatigueWakeTime"));
+      const napMinutes = Number(form.get("napMinutes"));
+      if (!bedtime || !wakeTime || bedtime === wakeTime ||
+        !Number.isInteger(napMinutes) || napMinutes < 0 || napMinutes > 1440) {
+        setMessage(quickToolResult, "Enter different sleep and wake times and a whole-number nap duration from 0 to 1440 minutes.");
+        return;
+      }
+      const sleepMinutes = (timeToMinutes(wakeTime) - timeToMinutes(bedtime) + 1440) % 1440;
+      const sleepHours = sleepMinutes / 60 + napMinutes / 60;
+      const fatigueScore = sleepHours >= 8 ? 0 : Math.trunc((8 - sleepHours) * 12.5);
+      setMessage(
+        quickToolResult,
+        `Estimated sleep: ${sleepHours.toFixed(2)} hours, including naps. Sleep-based fatigue score: ${fatigueScore}/100. This simple estimate is not clinically validated.`,
+        true
+      );
+    }
+  });
+
+  planForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     setMessage(planMessage, "");
     $("#save-status").textContent = "";
@@ -610,6 +655,13 @@
       setMessage(planMessage, "Sleep opportunity must be between 5 and 10 hours.");
       return;
     }
+    let operations;
+    try {
+      operations = parseOperations(form.get("operations"), operationStart, operationEnd, currentMissionDay);
+    } catch (error) {
+      setMessage(planMessage, error instanceof Error ? error.message : "Check the operation list format.");
+      return;
+    }
     const formValues = {
       currentBedtime: String(form.get("currentBedtime")),
       targetBedtime: String(form.get("targetBedtime")),
@@ -621,7 +673,7 @@
       operationEnd,
       caffeineInstruction: String(form.get("caffeineInstruction")).trim(),
       sleepAidInstruction: String(form.get("sleepAidInstruction")).trim(),
-      operations: parseOperations(form.get("operations"), operationStart, operationEnd, currentMissionDay),
+      operations,
       lightCycleStart: Number(form.get("lightCycleStart")) || null,
       lightCycleLength: Number(form.get("lightCycleLength")) || null
     };
@@ -633,6 +685,7 @@
       currentPlan = makePlan(formValues, latestAlertness, data.feedback);
       data.plan = currentPlan;
       saveCrewData(activeCrewId, data);
+      await persistCrewData(activeCrewId, data);
       renderPlan(currentPlan);
       $("#save-status").textContent = "Plan saved for this crew member on this device.";
     } catch (error) {
@@ -640,7 +693,7 @@
     }
   });
 
-  $("#feedback-form").addEventListener("submit", (event) => {
+  $("#feedback-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     setMessage(feedbackMessage, "");
     const form = new FormData(event.currentTarget);
@@ -660,20 +713,37 @@
         napCompleted: String(form.get("napCompleted"))
       });
       data.feedback = data.feedback.slice(-30);
+      const refreshedPlan = data.plan?.formValues
+        ? refreshPlanFromFeedback(data.plan, data.feedback)
+        : null;
       if (data.plan) {
+        if (refreshedPlan) data.plan = refreshedPlan;
         data.plan.score = calculateFatigueScore(
           actualSleep,
           data.plan.shiftHours,
           alertness,
           data.plan.sleepDebt || 0,
-          data.plan.formValues.operations?.length || 0
+          data.plan.formValues?.operations?.length || 0
         );
       }
       saveCrewData(activeCrewId, data);
+      await persistCrewData(activeCrewId, data);
       currentPlan = data.plan;
+      if (refreshedPlan && currentPlan?.formValues) {
+        for (const [key, value] of Object.entries(currentPlan.formValues)) {
+          const input = planForm.elements.namedItem(key);
+          if (input && (typeof value === "string" || typeof value === "number")) input.value = String(value);
+        }
+      }
       renderPlan(currentPlan);
       renderFeedback(data.feedback);
-      setMessage(feedbackMessage, "Feedback saved locally for this crew member.", true);
+      setMessage(
+        feedbackMessage,
+        refreshedPlan
+          ? `Feedback saved. Your plan advanced to Mission Day ${currentPlan.formValues.currentMissionDay}${data.feedback[data.feedback.length - 1].actualBedtime ? " using your reported sleep onset" : " using the planned sleep onset"}. Sleep duration is personalized after 3 reports.`
+          : "Feedback saved locally for this crew member.",
+        true
+      );
     } catch (error) {
       handleStorageError(error, feedbackMessage, "Could not save feedback");
     }

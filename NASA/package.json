@@ -1,0 +1,11 @@
+{
+  "name": "ssrs-local-server",
+  "private": true,
+  "dependencies": {
+    "sqlite3": "^3.44.2"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test scheduler.test.js"
+  }
+}
